@@ -187,7 +187,7 @@ namespace CDScriptManager
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
                     logfile.Write("Default preset file (default.ini) created\n");
-                    StreamWriter sw = File.CreateText(presetspath + "default.ini");
+                    IniFile PresetFile = new IniFile(presetspath + "default.ini");
                 }
                 else
                 {

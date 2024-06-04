@@ -5,6 +5,7 @@ namespace CDScriptManager
     public partial class Form3 : Form
     {
         int linescount;
+        string currentscript;
         string code_string_create = "Setting.Create";
         string scriptsetting = "setting ";
         string scriptsettingname;
@@ -19,17 +20,21 @@ namespace CDScriptManager
         public Form3(string selectedItem)
         {
             InitializeComponent();
-            label1.Text = selectedItem;
+            currentscript = selectedItem;
+            Main(currentscript);
+        }
 
+        public void Main(string currentscript)
+        {
             var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
             var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
 
-            SettingsChecking(selectedItem);
+            SettingsChecking(currentscript);
 
             bool readContent = false;
             string previousLine = null;
-
-            using (StreamReader reader = new StreamReader(scriptsfolder + "\\" + selectedItem))
+            linescount = 0;
+            using (StreamReader reader = new StreamReader(scriptsfolder + "\\" + currentscript))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
@@ -116,13 +121,13 @@ namespace CDScriptManager
                         if (settingtype == "numericUpDown")
                         {
                             NumericUpDown nud = new NumericUpDown();
-                            if (PresetFile.KeyExists(settingvar, selectedItem))
+                            if (PresetFile.KeyExists(settingvar, currentscript))
                             {
-                                nud.Value = Int32.Parse(PresetFile.Read(settingvar, selectedItem));
+                                nud.Value = Int32.Parse(PresetFile.Read(settingvar, currentscript));
                             }
                             else
                             {
-                                PresetFile.Write(settingvar, settingdefaultvalue, selectedItem);
+                                PresetFile.Write(settingvar, settingdefaultvalue, currentscript);
                                 nud.Value = Int32.Parse(settingdefaultvalue);
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -141,13 +146,13 @@ namespace CDScriptManager
                         else if (settingtype == "textBox")
                         {
                             TextBox tb = new TextBox();
-                            if (PresetFile.KeyExists(settingvar, selectedItem))
+                            if (PresetFile.KeyExists(settingvar, currentscript))
                             {
-                                tb.Text = PresetFile.Read(settingvar, selectedItem);
+                                tb.Text = PresetFile.Read(settingvar, currentscript);
                             }
                             else
                             {
-                                PresetFile.Write(settingvar, settingdefaultvalue, selectedItem);
+                                PresetFile.Write(settingvar, settingdefaultvalue, currentscript);
                                 tb.Text = settingdefaultvalue;
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -164,40 +169,12 @@ namespace CDScriptManager
                             tb.Tag = settingvar;
                         }
                         j++;
-                        /*var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
-                        byteArray_startpoint = ConvertHexStringToByteArray(result);
-                        byte[] fileBytes = File.ReadAllBytes(SettingsFile.Read("exec", "CDScriptManager"));
-                        byteindex = FindSequenceIndex(fileBytes, byteArray_startpoint);
-
-                        if (byteindex != -1)
-                        {
-                            using (var logfile = new StreamWriter(logfilepath, true))
-                            {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [INFO] ");
-                                logfile.Write($"Found mentioned byte sequence at index {byteindex}\n");
-                            }
-                            byteindex += byteArray_startpoint.Length;
-                            using (var logfile = new StreamWriter(logfilepath, true))
-                            {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [INFO] ");
-                                logfile.Write($"The starting point is shifted forward {byteArray_startpoint.Length} bytes\n");
-                            }
-                        }
-                        else
-                        {
-                            using (var logfile = new StreamWriter(logfilepath, true))
-                            {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [WARNING] ");
-                                logfile.Write("Mentioned byte sequence is not found\n");
-                            }
-                        }*/
                     }
                 }
             }
+            j = 0;
         }
+
         private void NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
             var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
@@ -206,7 +183,7 @@ namespace CDScriptManager
             NumericUpDown nud = sender as NumericUpDown;
             if (nud != null)
             {
-                PresetFile.Write(nud.Tag.ToString(), nud.Value.ToString(), label1.Text);
+                PresetFile.Write(nud.Tag.ToString(), nud.Value.ToString(), currentscript);
             }
             using (var logfile = new StreamWriter(logfilepath, true))
             {
@@ -224,7 +201,7 @@ namespace CDScriptManager
             TextBox tb = sender as TextBox;
             if (tb != null)
             {
-                PresetFile.Write(tb.Tag.ToString(), tb.Text, label1.Text);
+                PresetFile.Write(tb.Tag.ToString(), tb.Text, currentscript);
             }
             using (var logfile = new StreamWriter(logfilepath, true))
             {
@@ -290,12 +267,22 @@ namespace CDScriptManager
                     }
                 }
             }
-            //scriptsettingname = null;
         }
 
-        private void Form3_Load(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to reset all the defaults?", "Reset", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogResult == DialogResult.Yes)
+            {
+                var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
+                string presetState = PresetFile.Read("~state", currentscript);
+                PresetFile.DeleteSection(currentscript);
+                PresetFile.Write("~state", presetState, currentscript);
+                this.Controls.Clear();
+                this.InitializeComponent();
+                Main(currentscript);
+            }
         }
     }
 }
