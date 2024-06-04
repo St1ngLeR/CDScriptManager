@@ -8,8 +8,9 @@ namespace CDScriptManager
     {
         public Form2()
         {
+            string appVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             InitializeComponent();
-            label5.Text = $"{Assembly.GetExecutingAssembly().GetName().Version.ToString().Substring(0,5)} ({GetLinkerTime(Assembly.GetExecutingAssembly())})";
+            label5.Text = $"{appVersion.Substring(0, appVersion.Length - 2)} ({GetLinkerTime(Assembly.GetExecutingAssembly())})";
         }
 
         public static string GetLinkerTime(Assembly assembly)
