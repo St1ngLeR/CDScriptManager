@@ -1789,7 +1789,7 @@ namespace CDScriptManager
                 shortcut.IconLocation = Application.ExecutablePath + ",1";
                 shortcut.TargetPath = Application.ExecutablePath;
                 shortcut.WorkingDirectory = Path.GetDirectoryName(Application.ExecutablePath);
-                shortcut.Arguments = $"/preset={currentpresetname} /exec={exec}";
+                shortcut.Arguments = $"/preset=\"{currentpresetname}\" /exec=\"{exec}\"";
                 shortcut.Save(); // —охранить €рлык
             }
         }
