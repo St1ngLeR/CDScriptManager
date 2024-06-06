@@ -274,6 +274,12 @@ namespace CDScriptManager
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to reset all the defaults?", "Reset", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (dialogResult == DialogResult.Yes)
             {
+                using (var logfile = new StreamWriter(logfilepath, true))
+                {
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [INFO] ");
+                    logfile.Write("The default values have been reset for all script values\n");
+                }
                 var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                 var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
                 string presetState = PresetFile.Read("~state", currentscript);

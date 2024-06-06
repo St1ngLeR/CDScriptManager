@@ -33,6 +33,7 @@
             editToolStripMenuItem = new ToolStripMenuItem();
             runGameToolStripMenuItem = new ToolStripMenuItem();
             setGameExecutableToolStripMenuItem = new ToolStripMenuItem();
+            createAShortcutToolStripMenuItem = new ToolStripMenuItem();
             presetsToolStripMenuItem = new ToolStripMenuItem();
             newPresetToolStripMenuItem = new ToolStripMenuItem();
             openPresetToolStripMenuItem = new ToolStripMenuItem();
@@ -63,7 +64,7 @@
             // 
             // editToolStripMenuItem
             // 
-            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runGameToolStripMenuItem, setGameExecutableToolStripMenuItem });
+            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runGameToolStripMenuItem, setGameExecutableToolStripMenuItem, createAShortcutToolStripMenuItem });
             editToolStripMenuItem.Name = "editToolStripMenuItem";
             editToolStripMenuItem.Size = new Size(50, 20);
             editToolStripMenuItem.Text = "Game";
@@ -81,6 +82,13 @@
             setGameExecutableToolStripMenuItem.Size = new Size(183, 22);
             setGameExecutableToolStripMenuItem.Text = "Set game executable";
             setGameExecutableToolStripMenuItem.Click += setGameExecutableToolStripMenuItem_Click;
+            // 
+            // createAShortcutToolStripMenuItem
+            // 
+            createAShortcutToolStripMenuItem.Name = "createAShortcutToolStripMenuItem";
+            createAShortcutToolStripMenuItem.Size = new Size(183, 22);
+            createAShortcutToolStripMenuItem.Text = "Create shortcut";
+            createAShortcutToolStripMenuItem.Click += createAShortcutToolStripMenuItem_Click;
             // 
             // presetsToolStripMenuItem
             // 
@@ -244,5 +252,6 @@
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem setGameExecutableToolStripMenuItem;
         private ToolStripMenuItem runGameToolStripMenuItem;
+        private ToolStripMenuItem createAShortcutToolStripMenuItem;
     }
 }
