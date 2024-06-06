@@ -1,7 +1,6 @@
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
 using IWshRuntimeLibrary;
@@ -11,7 +10,6 @@ namespace CDScriptManager
 {
     public partial class Form1 : Form
     {
-
         string mainvar1 = "~cdscript_name";
         string mainvar2 = "~cdscript_version";
         string mainvar3 = "~cdscript_description";
@@ -90,8 +88,27 @@ namespace CDScriptManager
         {
             label2.Text = "";
             var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
-
-            currentpresetname = SettingsFile.Read("currentpreset", "CDScriptManager");
+            string[] args = Environment.GetCommandLineArgs();
+            int arg_preset_found = 0;
+            foreach (string arg in args)
+            {
+                if (arg.Contains("/preset="))
+                {
+                    currentpresetname = arg.Replace("/preset=", "").Replace("\"", "");
+                    arg_preset_found = 1;
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Command line argument \"preset\" is found. The value is \"{currentpresetname}\"\n");
+                    }
+                }
+                else if (arg_preset_found == 0)
+                {
+                    currentpresetname = SettingsFile.Read("currentpreset", "CDScriptManager");
+                }
+            }
+            
             if (currentpresetname != "default")
             {
                 CheckFormTitle();
@@ -137,7 +154,7 @@ namespace CDScriptManager
                 {
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
-                    logfile.Write($"The executable file is \"{exec}\"\n");
+                    logfile.Write($"The executable file is \"{SettingsFile.Read("exec","CDScriptManager")}\"\n");
                 }
             }
             if (!SettingsFile.KeyExists("currentpreset", "CDScriptManager"))
@@ -162,8 +179,6 @@ namespace CDScriptManager
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
                     logfile.Write("Current preset indication file is found\n");
-
-                    currentpresetname = SettingsFile.Read("currentpreset");
 
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
@@ -225,57 +240,100 @@ namespace CDScriptManager
                 logfile.Write("----------------------------------------\n");
             }
             CheckScriptFiles();
-
-            string[] args = Environment.GetCommandLineArgs();
-
+            int arg_exec_found = 0;
             foreach (string arg in args)
             {
                 if (arg.Contains("/preset="))
                 {
-                    currentpresetname = arg.Replace("/preset=", "").Replace("\"", "");
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Command line argument \"preset\" is found. The value is \"{currentpresetname}\"\n");
+                    }
                 }
 
                 if (arg.Contains("/exec="))
                 {
                     exec = arg.Replace("/exec=", "").Replace("\"", "");
+                    arg_exec_found = 1;
+
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Command line argument \"exec\" is found. The value is \"{exec}\"\n");
+                    }
+
                     RunGame(exec);
                     this.Close();
                 }
                 else
                 {
                     exec = SettingsFile.Read("exec", "CDScriptManager");
-
-                    if (SettingsFile.Read("skipmanager", "CDScriptManager") == "1")
-                    {
-                        RunGame(exec);
-                        this.Close();
-                    }
                 }
+            }
+            if ((SettingsFile.Read("skipmanager", "CDScriptManager") == "1") && (arg_exec_found == 0))
+            {
+                using (var logfile = new StreamWriter(logfilepath, true))
+                {
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [INFO] ");
+                    logfile.Write("Skipping manager is enabled\n");
+                }
+
+                RunGame(exec);
+                this.Close();
             }
         }
 
         public void RunGame(string filePath)
         {
-            tempfile = Path.GetTempFileName();
-            File.Copy(Directory.GetCurrentDirectory() + "\\" + filePath, tempfile, true);
-            File.SetAttributes(tempfile, FileAttributes.Normal);
-            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
-            for (int i = 0; i < checkedListBox1.Items.Count; i++)
+            try
             {
-                if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
+                tempfile = Path.GetTempFileName();
+                File.Copy(Directory.GetCurrentDirectory() + "\\" + filePath, tempfile, true);
+                using (var logfile = new StreamWriter(logfilepath, true))
                 {
-                    CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar1, mainvar1value, true);
-                    CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar2, mainvar2value, true);
-                    CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar3, mainvar3value, true);
-                    CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar4, mainvar4value, true);
-                    CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar5, mainvar5value, true);
-                    CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar6, mainvar6value, true);
-                    ScriptChecking(checkedListBox1.Items[i].ToString());
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [INFO] ");
+                    logfile.Write($"Creating temporary file \"{tempfile}\"\n");
                 }
+                File.SetAttributes(tempfile, FileAttributes.Normal);
+                var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                {
+                    if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
+                    {
+                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar1, mainvar1value, true);
+                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar2, mainvar2value, true);
+                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar3, mainvar3value, true);
+                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar4, mainvar4value, true);
+                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar5, mainvar5value, true);
+                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar6, mainvar6value, true);
+                        ScriptChecking(checkedListBox1.Items[i].ToString());
+                    }
+                }
+                using (var logfile = new StreamWriter(logfilepath, true))
+                {
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [INFO] ");
+                    logfile.Write($"Running executable file \"{exec}\"\n");
+                }
+                Process.Start(Directory.GetCurrentDirectory() + "\\" + filePath).WaitForExit();
+                File.Copy(tempfile, Directory.GetCurrentDirectory() + "\\" + filePath, overwrite: true);
+                File.Delete(tempfile);
             }
-            Process.Start(Directory.GetCurrentDirectory() + "\\" + filePath).WaitForExit();
-            File.Copy(tempfile, Directory.GetCurrentDirectory() + "\\" + filePath, overwrite: true);
-            File.Delete(tempfile);
+            catch
+            {
+                using (var logfile = new StreamWriter(logfilepath, true))
+                {
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [ERROR] ");
+                    logfile.Write("The executable file is not found\n");
+                }
+                MessageBox.Show("The executable file could not be found in the current directory. Make sure that the file is in the current folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CheckScriptFiles()
@@ -358,15 +416,12 @@ namespace CDScriptManager
                         logfile.Write($"Script file \"{checkedListBox1.Items[i]}\" state is \"false\"\n");
                     }
                 }
-
-                //SettingsChecking(checkedListBox1.Items[i].ToString());
-
             }
         }
 
         private void CheckFormTitle()
         {
-            if (currentpresetname == "default")
+            if ((currentpresetname == "default") || (currentpresetname == ""))
             {
                 this.Text = "CDScriptManager";
             }
@@ -397,6 +452,7 @@ namespace CDScriptManager
                 logfile.Write("[" + DateTime.Now.ToString() + "]");
                 logfile.Write(" [INFO] ");
                 logfile.Write("Main variables checking finished\n");
+                logfile.Write("----------------------------------------\n");
             }
             mainvarcount = 0;
 
@@ -511,8 +567,7 @@ namespace CDScriptManager
                 }
                 linescount++;
             }
-            // TODO: Код ниже нужно сделать функцией
-            // "Обсасывание" каждой строчки
+
             string[] lines = contentBuilder.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             for (int i = 0; i < linescount; i++)
@@ -523,7 +578,6 @@ namespace CDScriptManager
                     logfile.Write(" [INFO] ");
                     logfile.Write($"Checking line {i + 1}\n");
                 }
-                //MessageBox.Show(lines[i]); // Проверка на правильный вывод строк
                 string line = lines[i];
                 int patternIndex;
                 if (line.Contains(code_print))
@@ -569,7 +623,6 @@ namespace CDScriptManager
                             .Replace(" =", "")
                             .Replace("= ", "")
                             .Replace("=", "");
-                        //MessageBox.Show(result); // Показ содержимого до переноса строки "\n"
                         var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                         byteArray_startpoint = ConvertHexStringToByteArray(result);
                         byte[] fileBytes = File.ReadAllBytes(exec);
@@ -653,7 +706,6 @@ namespace CDScriptManager
                             .Replace(" =", "")
                             .Replace("= ", "")
                             .Replace("=", "");
-                        //MessageBox.Show(result); // Показ содержимого до переноса строки "\n"
                         var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                         byteArray_insert = ConvertHexStringToByteArray(result);
                         try
@@ -774,7 +826,6 @@ namespace CDScriptManager
                                     DataTable dataTable = new DataTable();
                                     computeResult = Convert.ToSingle(dataTable.Compute(expression, ""));
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
-                                    //MessageBox.Show(byteindex.ToString());
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
                                 }
@@ -831,7 +882,6 @@ namespace CDScriptManager
                             .Replace(" =", "")
                             .Replace("= ", "")
                             .Replace("=", "");
-                        //MessageBox.Show(result); // Показ содержимого до переноса строки "\n"
                         var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                         int result = SByte.Parse(result_text);
                         byteArray_insert = BitConverter.GetBytes(result);
@@ -1505,14 +1555,6 @@ namespace CDScriptManager
                         label2.Text += "E-Mail: (unknown)\n\n";
                     }
                     ToggleConfigButton(checkedListBox1.SelectedItem.ToString());
-                    //SettingsChecking(checkedListBox1.SelectedItem.ToString());
-                    //ScriptChecking(checkedListBox1.SelectedItem.ToString());
-                    /*using (var logfile = new StreamWriter(logfilepath, true))
-                    {
-                        logfile.Write("[" + DateTime.Now.ToString() + "]");
-                        logfile.Write(" [INFO] ");
-                        logfile.Write($"Checking script file \"{checkedListBox1.SelectedItem}\" finished\n");
-                    }*/
                 }
             }
         }
@@ -1758,7 +1800,7 @@ namespace CDScriptManager
                 {
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
-                    logfile.Write($"New executable file is \"{exec}\"\n");
+                    logfile.Write($"New executable file is \"{SettingsFile.Read("exec", "CDScriptManager")}\"\n");
                 }
             }
         }
