@@ -154,5 +154,5 @@ Exec.StartPoint = 02 0F 1B 07 04 0E  # Sets the starting point for 1.2
 Exec.Replace.Float = 0.25  # Replace after starting point
 ```
 In the example above, three starting points are set, at which the same value is replaced. CDScript works in such a way that the manager ignores the replacement of values if the specified sequence of bytes is not found. Thus, this example will be suitable for all three versions of the game.
-## 3rd-party plugins
+# 3rd-party plugins
 The application is using [Costura.Fody](https://github.com/Fody/Costura/) to compile all resources into a single executable file.
