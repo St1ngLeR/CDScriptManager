@@ -11,9 +11,9 @@
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/d80fa094-8417-4874-88ad-1a4675a70413)
 
 CDSM is a small window that consists of various main elements:
-1. "Game" tab. Contains options related to the game itself (check for 8-10 items)
+1. "Game" tab. Contains options related to the game itself (see ["Game" tab](tree/master?tab=readme-ov-file#game-tab))
 2. "Presets" tab. Contains options related to the script presets (check for 11-13 items)
-3. "About" tab. Contains miscellaneous ~~not really importent~~ stuff (check for 8-10 items)
+3. "About" tab. Contains miscellaneous ~~not really importent~~ stuff (check for 14-15 items)
 4. Script list. The list shows all scripts, located in `scripts` folder in the game directory.
 5. Script information. The area for displaying the description of the selected script.
 6. "Refresh" button. The button to refrest script list.
