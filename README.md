@@ -12,18 +12,18 @@
 
 CDSM is a small window that consists of various main elements:
 1. "Game" tab. Contains options related to the game itself (see ["Game" tab](#game-tab))
-2. "Presets" tab. Contains options related to the script presets (check for 11-13 items)
-3. "About" tab. Contains miscellaneous ~~not really importent~~ stuff (check for 14-15 items)
+2. "Presets" tab. Contains options related to the script presets (see ["Presets" tab](#presets-tab))
+3. "About" tab. Contains miscellaneous ~~not really importent~~ stuff (see ["About" tab](#about-tab))
 4. Script list. The list shows all scripts, located in `scripts` folder in the game directory.
 5. Script information. The area for displaying the description of the selected script.
 6. "Refresh" button. The button to refrest script list.
-7. "Configure" button. The button to configure script settings in separated window. The button is enabled only if script has settings to configure.
+7. "Configure" button. The button to configure script settings in separated window. The button is enabled only if script has settings to configure. (see ["Configuration" window](#configuration-window))
 ### "Game" tab
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/c0556bfb-8b54-45b2-a435-1dfbd5dd9aa9)
 
 8. "Run game" option. Run the game executable (`.exe` or `.dll`).
 9. "Set game executable" option. Change the game executable (`.exe` or `.dll`).
-10. "Create shortcut" option. Create shortcut with preinstalled game executable and script preset for quick game run.
+10. "Create shortcut" option. Create shortcut with preinstalled game executable and script preset via command-line arguments for quick game run. (see [Command-line arguments](#command-line-arguments))
 ### "Presets" tab
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/6d751ff5-ace5-4dba-9b5f-ac5dac1eba41)
 
@@ -94,7 +94,7 @@ The CDScript language is very limited (for now yet) and similar to the C# langua
 ### Main variables
 In order for information about scripts to be conveniently displayed in managers, the CDScript language introduces the main variables that are read by the manager when selecting a script from the list of scripts. There are only 6 main variables and the beginning of their names are marked with a "~" character: `~cdscript_name`, `~cdscript_version`, `~cdscript_description`, `~cdscript_author`, `~cdscript_website`, `~cdscript_email`.
 
-These variables do not need to be represented, because their purpose is indicated directly in their name. In any case, despite the fact that these variables are the main ones, they are not necessary for the script to work. They are needed exclusively for display in CDSM. If any of these main variables are not written in the script, the manager show it as "(unknown)".
+These variables don't need to be represented, because their purpose is indicated directly in their name. In any case, despite the fact that these variables are the main ones, they are not necessary for the script to work. They are needed exclusively for display in CDSM. If any of these main variables are not written in the script, the manager show it as "(unknown)".
 ### Script body
 To create a script body, like creating a function in C#, you need to set a header `script (your_script_body_name)` and limit the body with curly brackets. Tabulation is not important here, but it is recommended to use it for a beautiful look. Example:
 ```
