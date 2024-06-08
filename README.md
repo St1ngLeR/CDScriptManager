@@ -85,12 +85,55 @@ In order for information about scripts to be conveniently displayed in managers,
 
 These variables do not need to be represented, because their purpose is indicated directly in their name. In any case, despite the fact that these variables are the main ones, they are not necessary for the script to work. They are needed exclusively for display in CDSM. If any of these main variables are not written in the script, the manager show it as "(unknown)".
 ## Script body
-To create a script body, like creating a function in C#, you need to set a header `script (your_script_body_name)` and limit the body with curly brackets. Tabulation is not important here, but it is recommended to use it for a beautiful look.
-## Calling methods
+To create a script body, like creating a function in C#, you need to set a header `script (your_script_body_name)` and limit the body with curly brackets. Tabulation is not important here, but it is recommended to use it for a beautiful look. Example:
+```
+script MyScript
+{
+  do something...
+}
+```
+## Methods
 As in C#, CDScript uses various methods that you can call and work with them inside the code. Here are descriptions of all existing CDScript methods:
-- `Console.Print` (string) - outputs lines `cdscript_log.txt` to the logging file (for example, `Console.Print("My awesome line!\nMy MORE awesome line!")`).
-- `Exec.StartPoint` (bytes) - assigns a starting point for working with the executable file of the game (for example, `Exec.StartPoint(00 01 02 0A 0B 0C)`).
-- `Exec.Replace.(output_type)` (bytes, int8, int16, int32, int64, float, string) - replaces the contents of the executable file with the new specified values after the starting point taken from `Exec.StartPoint` before it (for example, `Exec.Replace.Float(0.25)`).
+- `Console.Print` (string) - outputs lines `cdscript_log.txt` to the logging file. Example:
+```
+Console.Print("My awesome line!\nMy MORE awesome line!")
+```
+- `Exec.StartPoint` (bytes) - assigns a starting point for working with the executable file of the game. Example:
+```
+Exec.StartPoint = 00 01 02 0A 0B 0C
+```
+- `Exec.Replace.(output_type)` (bytes, int8, int16, int32, int64, float, string) - replaces the contents of the executable file with the new specified values after the starting point taken from `Exec.StartPoint` before it. Example:
+```
+Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
+Exec.Replace.Float = 0.25            # Converts float value to bytes and replace them after the staring point specified above
+```
+- `Setting.Create` (textBox, numericUpDown) - creates configurable script setting. This method should be called with following template - `variable_name, text_in_manager, output_type, default_value`. The separator is "comma" (","). Example:
+```
+Setting.Create = MySetting, My awesome setting:, textBox, AWESOME  # This line creates setting with variable "MySetting", with type "textBox" with default value "AWESOME", which is named in "Configuration" window as "My awesome setting:"
+```
+## Script settings
+Scripts can also have settings that are changed in the manager through the "Configuration" window. To set the settings, you need to specify the script setting body inside the script body with `setting (your_setting_body_name)` and limit the body with curly brackets. Example:
+```
+script MyScript
+{
+  setting MySetting
+  {
+    do something...
+  }
+}
+```
+To make setting configurable, you need to call the method `Setting.Create`. The rules of the call are described above. To apply the value from the setting, you need to call the method by specifying its variable. Example:
+```
+script MyScript
+{
+  setting MySetting
+  {
+    Setting.Create = MySetting, My awesome setting:, textBox, AWESOME  # Creates setting
+    Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
+    Exec.Replace.String = MySetting  # Replace content on string from "MySetting" setting
+  }
+}
+```
 ## Tips
 something
 ## 3rd-party plugins
