@@ -90,7 +90,7 @@ The CDScript language is very limited (for now yet) and similar to the C# langua
 - All comments are marked with a "#" character (for example, `# this is my useful comment!`). However, keep in mind that only single-line comments are supported.
 - CDScript does not use any specific character to end a line. Use a new line of other actions.
 - To go to the next line, "string" values ​​use `\n`.
-- For "integer" values CDScript is supports simple mathematical operations (addition, subtraction, multiplication, division).
+- For "integer" values CDScript supports simple mathematical operations (addition, subtraction, multiplication, division).
 ### Main variables
 In order for information about scripts to be conveniently displayed in managers, the CDScript language introduces the main variables that are read by the manager when selecting a script from the list of scripts. There are only 6 main variables and the beginning of their names are marked with a "~" character: `~cdscript_name`, `~cdscript_version`, `~cdscript_description`, `~cdscript_author`, `~cdscript_website`, `~cdscript_email`.
 
