@@ -43,8 +43,8 @@ CDSM is a small window that consists of various main elements:
 
 ## Command-line arguments
 CDSM supports command-line arguments to speed up and simplify the procedure of running the game:
-- `/preset="(preset_name)"` - loads specified preset from `scripts/presets` folder.
-- `/exec="(executable_file_name)"` - runs specified executable file (`.exe` or `.dll`).
+- `/preset=(preset_name)` - loads specified preset from `scripts/presets` folder.
+- `/exec="executable_file_name)` - runs specified executable file (`.exe` or `.dll`).
 > [!IMPORTANT]
 > The order of the arguments is important. If you want to start the game with a preset, make sure that the preset is set **BEFORE** assigning the file to run.
 
