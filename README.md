@@ -75,13 +75,23 @@ As described earlier, the main task of CDSM is to download CDScript files for th
 
 Above you can see an example of a simple script. Based on it, the explanations for writing the script are given below.
 The CDScript language is very limited (for now yet) and similar to the C# language, although it has some differences. 
-## Comments
-All comments are marked with a "#" character (for example, `# this is my useful comment!`). However, keep in mind that only single-line comments are supported.
+## Main features
+- All comments are marked with a "#" character (for example, `# this is my useful comment!`). However, keep in mind that only single-line comments are supported.
+- CDScript does not use any specific character to end a line. Use a new line of other actions.
+- To go to the next line, "string" values ​​use `\n`.
+- For "integer" values CDScript is supports simple mathematical operations (addition, subtraction, multiplication, division).
 ## Main variables
-In order for information about scripts to be conveniently displayed in managers, the CDScript language introduces the main variables that are read by the manager when selecting a script from the list of scripts. There are only 6 main changes and the beginning of their names are marked with a "~" character: `~cdscript_name`, `~cdscript_version`, `~cdscript_description`, `~cdscript_author`, `~cdscript_website`, `~cdscript_email`.
+In order for information about scripts to be conveniently displayed in managers, the CDScript language introduces the main variables that are read by the manager when selecting a script from the list of scripts. There are only 6 main variables and the beginning of their names are marked with a "~" character: `~cdscript_name`, `~cdscript_version`, `~cdscript_description`, `~cdscript_author`, `~cdscript_website`, `~cdscript_email`.
 
-These variables do not need to be represented, because their purpose is indicated directly in their name. In any case, despite the fact that these variables are the main ones, they are not necessary for the script to work. They are needed exclusively for display in CDSM.
+These variables do not need to be represented, because their purpose is indicated directly in their name. In any case, despite the fact that these variables are the main ones, they are not necessary for the script to work. They are needed exclusively for display in CDSM. If any of these main variables are not written in the script, the manager show it as "(unknown)".
 ## Script body
 To create a script body, like creating a function in C#, you need to set a header `script (your_script_body_name)` and limit the body with curly brackets. Tabulation is not important here, but it is recommended to use it for a beautiful look.
+## Calling methods
+As in C#, CDScript uses various methods that you can call and work with them inside the code. Here are descriptions of all existing CDScript methods:
+- `Console.Print` (string) - outputs lines `cdscript_log.txt` to the logging file (for example, `Console.Print("My awesome line!\nMy MORE awesome line!")`).
+- `Exec.StartPoint` (bytes) - assigns a starting point for working with the executable file of the game (for example, `Exec.StartPoint(00 01 02 0A 0B 0C)`).
+- `Exec.Replace.(output_type)` (bytes, int8, int16, int32, int64, float, string) - replaces the contents of the executable file with the new specified values after the starting point taken from `Exec.StartPoint` before it (for example, `Exec.Replace.Float(0.25)`).
+## Tips
+something
 ## 3rd-party plugins
 The application is using [Costura.Fody](https://github.com/Fody/Costura/) to compile all resources into a single executable file.
