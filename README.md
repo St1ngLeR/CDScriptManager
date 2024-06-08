@@ -4,7 +4,7 @@
 > [!WARNING]
 > To run the application, you need to install [.NET Desktop Runtime 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 
-**CDScriptManager (*later CDSM*)** is a tool for fast and handy managing CDScript files for Crashday. CDSM gives you the opportunity to configure and apply special script files to a game, which open up the possibilities of low-level modding.
+**CDScriptManager (*later CDSM*)** is a tool for fast and handy managing CDScript files for classic Crashday (1.0-1.2). CDSM gives you the opportunity to configure and apply special script files to a game, which open up the possibilities of low-level modding.
 
 ## Program overview
 ### Main
@@ -98,14 +98,14 @@ As in C#, CDScript uses various methods that you can call and work with them ins
 ```
 Console.Print("My awesome line!\nMy MORE awesome line!")
 ```
-- `Exec.StartPoint` (bytes) - assigns a starting point for working with the executable file of the game. Example:
+- `Exec.StartPoint` (bytes) - assigns a starting point, which is represented as a byte sequence for working with the executable file of the game. Example:
 ```
 Exec.StartPoint = 00 01 02 0A 0B 0C
 ```
 - `Exec.Replace.(output_type)` (bytes, int8, int16, int32, int64, float, string) - replaces the contents of the executable file with the new specified values after the starting point taken from `Exec.StartPoint` before it. Example:
 ```
 Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
-Exec.Replace.Float = 0.25            # Converts float value to bytes and replace them after the staring point specified above
+Exec.Replace.Float = 0.25  # Converts float value to bytes and replace them after the staring point specified above
 ```
 - `Setting.Create` (textBox, numericUpDown) - creates configurable script setting. This method should be called with following template - `variable_name, text_in_manager, output_type, default_value`. The separator is "comma" (","). Example:
 ```
@@ -135,6 +135,24 @@ script MyScript
 }
 ```
 ## Tips
-something
+For a more convenient and practical script writing, various tips that may be useful are described below.
+### Replacement in a row
+To replace several values in a row after the starting point, you just need to call the method `Exec.Replace.(output_type)` as many times in a row as you need. Example:
+```
+Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
+Exec.Replace.Float = 0.25  # Replace after starting point
+Exec.Replace.Bytes = 2B 3A 0D E5  # Replace after replaced value specified above
+```
+### Starting points for different game versions
+Crashday has three released versions (1.0, 1.1, 1.2) and each of these versions has executable files whose structure differs from each other and, accordingly, the byte sequences are different. To avoid the fact that, for example, the script works for version 1.2, but not for 1.1 and 1.0, then you need to set the starting points for each version, where they differ. Example:
+```
+Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point for 1.0
+Exec.Replace.Float = 0.25  # Replace after starting point
+Exec.StartPoint = 2A 7B 3F 4A A0 03  # Sets the starting point for 1.1
+Exec.Replace.Float = 0.25  # Replace after starting point
+Exec.StartPoint = 02 0F 1B 07 04 0E  # Sets the starting point for 1.2
+Exec.Replace.Float = 0.25  # Replace after starting point
+```
+In the example above, three starting points are set, at which the same value is replaced. CDScript works in such a way that the manager ignores the replacement of values if the specified sequence of bytes is not found. Thus, this example will be suitable for all three versions of the game.
 ## 3rd-party plugins
 The application is using [Costura.Fody](https://github.com/Fody/Costura/) to compile all resources into a single executable file.
