@@ -1,7 +1,7 @@
 # CDScriptManager
 ![CDScript](https://github.com/St1ngLeR/CDScriptManager/blob/master/CDScript_Logo1.png?raw=true)
 ## Introduction
-> [!WARNING]
+> [!IMPORTANT]
 > To run the application, you need to install [.NET Desktop Runtime 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
 
 **CDScriptManager (*later CDSM*)** is a tool for fast and handy managing CDScript files for classic Crashday (1.0-1.2). CDSM gives you the opportunity to configure and apply special script files to a game, which open up the possibilities of low-level modding.
@@ -10,7 +10,7 @@
 ### Main
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/d80fa094-8417-4874-88ad-1a4675a70413)
 
-The CDSM is a small window that consists of various main elements:
+CDSM is a small window that consists of various main elements:
 1. "Game" tab. Contains options related to the game itself (check for 8-10 items)
 2. "Presets" tab. Contains options related to the script presets (check for 11-13 items)
 3. "About" tab. Contains miscellaneous ~~not really importent~~ stuff (check for 8-10 items)
@@ -41,6 +41,16 @@ The CDSM is a small window that consists of various main elements:
 16. Settings list. The list of script settings that can be configurated by user. The count of settings is depends on the script.
 17. "Reset button". Reset all script settings to the default values.
 
+## Command-line arguments
+CDSM supports command-line arguments to speed up and simplify the procedure of running the game:
+- `/preset="(preset_name)"` - loads specified preset from `scripts/presets` folder.
+- `/exec="(executable_file_name)"` - runs specified executable file (`.exe` or `.dll`).
+> [!IMPORTANT]
+> The order of the arguments is important. If you want to start the game with a preset, make sure that the preset is set **BEFORE** assigning the file to run.
+
+> [!IMPORTANT]
+> For the correct assignment of the preset and the executable file, it's recommended to enclose their names in quotation marks to avoid malfunctions. This is especially true if there is a space character in their names.
+
 ## Files overview
 ### Contents
 Out of the box, the program consists of one file - the executive file itself. But after the first launch, the program creates some files, which are described below:
@@ -64,12 +74,13 @@ The files created and used by CDSM have their own structure, which is described 
 #### `Preset file (scripts/presets/*.ini)`
 - `[(script_name).cdscript]` section contains all values related to it's script.
 - `~state` is the main key that is rensposible for disabling/enabling script to load. (`false` - disable, `true` - enable)
+
 The script section can also use other keys if the script has settings that the user can configure in the manager.
 ## Writing a CDScript file
 > [!CAUTION]
 > This section is dedicated to creating script files and is intended exclusively for experienced users. Any manipulation of scripts can lead to malfunction of the game. Do this at your own risk.
 
-As described earlier, the main task of CDSM is to download CDScript files for the Crashday game. CDScript files are unencrypted human-readable files with the extension `.cdscript`. Script files can be opened and edited in any text editor (for example, [Notepad++](https://github.com/notepad-plus-plus/notepad-plus-plus)).
+As described earlier, the main task of CDSM is to integrate CDScript files to the Crashday game. CDScript files are unencrypted human-readable files with the extension `.cdscript`. Script files can be created, edited and opened in any text editor (for example, [Notepad++](https://github.com/notepad-plus-plus/notepad-plus-plus)).
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/2efcb020-cacd-49eb-a862-560694a6192f)
 *Sample code "Hello World!" in the form of a CDScript. The script outputs the line "Hello World!" to the `cdscript_log.txt` logging file.*
 
