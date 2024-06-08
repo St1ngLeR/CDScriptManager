@@ -41,31 +41,31 @@ The CDSM is a small window that consists of various main elements:
 16. Settings list. The list of script settings that can be configurated by user. The count of settings is depends on the script.
 17. "Reset button". Reset all script settings to the default values.
 
-# Files overview
-## Contents
+## Files overview
+### Contents
 Out of the box, the program consists of one file - the executive file itself. But after the first launch, the program creates some files, which are described below:
-### `cdscript_log.txt`
+#### `cdscript_log.txt`
 The logging file that captures each action of the program. This file can be useful for script writing. After each launch, the file is written over again.
-### `cdsmanager_settings.ini`
+#### `cdsmanager_settings.ini`
 The file that contains basic settings for proper work of program.
-### `scripts` folder
+#### `scripts` folder
 A folder for CDScript files that CDSM uses to managing them. Initially, the folder does not contain any scripts.
-### `presets` folder
+#### `presets` folder
 A folder inside the `scripts` folder for script preset files. Initially, the folder contains a default preset.
-## Structure
+### Structure
 > [!WARNING]
 > The following files are updated by the program itself, so manual modification is not recommended unless as a last resort.
 
 The files created and used by CDSM have their own structure, which is described below:
-### `cdsmanager_settings.ini`
+#### `cdsmanager_settings.ini`
 - `skipmanager` - allow to skip manager on it's launch for quick run game. (default value is `0`)
 - `exec` - game executable. (default value is `Crashday.exe`)
 - `currentpreset` - current selected script preset. (default value is `default`)
-### `Preset file (scripts/presets/*.ini)`
+#### `Preset file (scripts/presets/*.ini)`
 - `[(script_name).cdscript]` section contains all values related to it's script.
 - `~state` is the main key that is rensposible for disabling/enabling script to load. (`false` - disable, `true` - enable)
 The script section can also use other keys if the script has settings that the user can configure in the manager.
-# Writing a CDScript file
+## Writing a CDScript file
 > [!CAUTION]
 > This section is dedicated to creating script files and is intended exclusively for experienced users. Any manipulation of scripts can lead to malfunction of the game. Do this at your own risk.
 
@@ -75,16 +75,16 @@ As described earlier, the main task of CDSM is to download CDScript files for th
 
 Above you can see an example of a simple script. Based on it, the explanations for writing the script are given below.
 The CDScript language is very limited (for now yet) and similar to the C# language, although it has some differences. 
-## Main features
+### Main features
 - All comments are marked with a "#" character (for example, `# this is my useful comment!`). However, keep in mind that only single-line comments are supported.
 - CDScript does not use any specific character to end a line. Use a new line of other actions.
 - To go to the next line, "string" values ​​use `\n`.
 - For "integer" values CDScript is supports simple mathematical operations (addition, subtraction, multiplication, division).
-## Main variables
+### Main variables
 In order for information about scripts to be conveniently displayed in managers, the CDScript language introduces the main variables that are read by the manager when selecting a script from the list of scripts. There are only 6 main variables and the beginning of their names are marked with a "~" character: `~cdscript_name`, `~cdscript_version`, `~cdscript_description`, `~cdscript_author`, `~cdscript_website`, `~cdscript_email`.
 
 These variables do not need to be represented, because their purpose is indicated directly in their name. In any case, despite the fact that these variables are the main ones, they are not necessary for the script to work. They are needed exclusively for display in CDSM. If any of these main variables are not written in the script, the manager show it as "(unknown)".
-## Script body
+### Script body
 To create a script body, like creating a function in C#, you need to set a header `script (your_script_body_name)` and limit the body with curly brackets. Tabulation is not important here, but it is recommended to use it for a beautiful look. Example:
 ```
 script MyScript
@@ -92,7 +92,7 @@ script MyScript
   do something...
 }
 ```
-## Methods
+### Methods
 As in C#, CDScript uses various methods that you can call and work with them inside the code. Here are descriptions of all existing CDScript methods:
 - `Console.Print` (string) - outputs lines `cdscript_log.txt` to the logging file. Example:
 ```
@@ -111,7 +111,7 @@ Exec.Replace.Float = 0.25  # Converts float value to bytes and replace them afte
 ```
 Setting.Create = MySetting, My awesome setting:, textBox, AWESOME  # This line creates setting with variable "MySetting", with type "textBox" with default value "AWESOME", which is named in "Configuration" window as "My awesome setting:"
 ```
-## Script settings
+### Script settings
 Scripts can also have settings that are changed in the manager through the "Configuration" window. To set the settings, you need to specify the script setting body inside the script body with `setting (your_setting_body_name)` and limit the body with curly brackets. Example:
 ```
 script MyScript
@@ -134,16 +134,16 @@ script MyScript
   }
 }
 ```
-## Tips
+### Tips
 For a more convenient and practical script writing, various tips that may be useful are described below.
-### Replacement in a row
+#### Replacement in a row
 To replace several values in a row after the starting point, you just need to call the method `Exec.Replace.(output_type)` as many times in a row as you need. Example:
 ```
 Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
 Exec.Replace.Float = 0.25  # Replace after starting point
 Exec.Replace.Bytes = 2B 3A 0D E5  # Replace after replaced value specified above
 ```
-### Starting points for different game versions
+#### Starting points for different game versions
 Crashday has three released versions (1.0, 1.1, 1.2) and each of these versions has executable files whose structure differs from each other and, accordingly, the byte sequences are different. To avoid the fact that, for example, the script works for version 1.2, but not for 1.1 and 1.0, then you need to set the starting points for each version, where they differ. Example:
 ```
 Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point for 1.0
@@ -154,5 +154,5 @@ Exec.StartPoint = 02 0F 1B 07 04 0E  # Sets the starting point for 1.2
 Exec.Replace.Float = 0.25  # Replace after starting point
 ```
 In the example above, three starting points are set, at which the same value is replaced. CDScript works in such a way that the manager ignores the replacement of values if the specified sequence of bytes is not found. Thus, this example will be suitable for all three versions of the game.
-# 3rd-party plugins
+## 3rd-party plugins
 The application is using [Costura.Fody](https://github.com/Fody/Costura/) to compile all resources into a single executable file.
