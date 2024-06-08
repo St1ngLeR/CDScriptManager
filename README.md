@@ -88,7 +88,7 @@ Above you can see an example of a simple script. Based on it, the explanations f
 The CDScript language is very limited (for now yet) and similar to the C# language, although it has some differences. 
 ### Main features
 - All comments are marked with a "#" character (for example, `# this is my useful comment!`). However, keep in mind that only single-line comments are supported.
-- CDScript does not use any specific character to end a line. Use a new line of other actions.
+- CDScript does not use any specific character to end a line. Use a new line for other actions.
 - To go to the next line, "string" values ​​use `\n`.
 - For "integer" values CDScript supports simple mathematical operations (addition, subtraction, multiplication, division).
 ### Main variables
