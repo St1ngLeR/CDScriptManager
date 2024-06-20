@@ -808,15 +808,15 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            patternIndex = line.IndexOf(code_exec_rep_i8);
-                            int computeResult = 0;
+                            patternIndex = line.IndexOf(code_exec_rep_f);
+                            float computeResult = 0f;
                             // Проверяем, содержит ли строка искомый паттерн
                             try
                             {
                                 if (patternIndex != -1)
                                 {
                                     // Отображаем оставшееся содержимое строки после паттерна
-                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i8.Length);
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_f.Length);
                                     string expression = contentAfterPattern.Split('=')[1].Trim();
 
                                     foreach (var setting in settings)
@@ -824,7 +824,7 @@ namespace CDScriptManager
                                         expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
                                     }
                                     DataTable dataTable = new DataTable();
-                                    computeResult = SByte.Parse(expression);
+                                    computeResult = Convert.ToSingle(dataTable.Compute(expression, ""));
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
