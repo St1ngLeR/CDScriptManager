@@ -142,6 +142,8 @@ namespace CDScriptManager
                             panel1.Controls.Add(nud);
                             nud.ValueChanged += NumericUpDown_ValueChanged;
                             nud.Tag = settingvar;
+                            nud.Minimum = 0;
+                            nud.Maximum = 2147483647;
                         }
                         else if (settingtype == "textBox")
                         {
@@ -233,10 +235,6 @@ namespace CDScriptManager
                     {
                         using (var logfile = new StreamWriter(logfilepath, true))
                         {
-                            logfile.Write("[" + DateTime.Now.ToString() + "]");
-                            logfile.Write(" [INFO] ");
-                            logfile.Write($"Script setting \"{scriptsettingname}\" is found\n");
-
                             logfile.Write("[" + DateTime.Now.ToString() + "]");
                             logfile.Write(" [INFO] ");
                             logfile.Write("Checking the script setting\n");
