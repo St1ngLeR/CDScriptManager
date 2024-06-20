@@ -808,15 +808,15 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            patternIndex = line.IndexOf(code_exec_rep_f);
-                            float computeResult = 0f;
+                            patternIndex = line.IndexOf(code_exec_rep_i8);
+                            int computeResult = 0;
                             // Проверяем, содержит ли строка искомый паттерн
                             try
                             {
                                 if (patternIndex != -1)
                                 {
                                     // Отображаем оставшееся содержимое строки после паттерна
-                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_f.Length);
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i8.Length);
                                     string expression = contentAfterPattern.Split('=')[1].Trim();
 
                                     foreach (var setting in settings)
@@ -824,7 +824,7 @@ namespace CDScriptManager
                                         expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
                                     }
                                     DataTable dataTable = new DataTable();
-                                    computeResult = Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    computeResult = SByte.Parse(expression);
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
@@ -929,11 +929,10 @@ namespace CDScriptManager
                                         expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
                                     }
                                     DataTable dataTable = new DataTable();
-                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    computeResult = SByte.Parse(expression);
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
-                                    MessageBox.Show(computeResult.ToString());
                                 }
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1048,11 +1047,10 @@ namespace CDScriptManager
                                         expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
                                     }
                                     DataTable dataTable = new DataTable();
-                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    computeResult = Int16.Parse(expression);
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
-                                    MessageBox.Show(computeResult.ToString());
                                 }
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1166,11 +1164,10 @@ namespace CDScriptManager
                                         expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
                                     }
                                     DataTable dataTable = new DataTable();
-                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    computeResult = Int32.Parse(expression);
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
-                                    MessageBox.Show(computeResult.ToString());
                                 }
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1270,7 +1267,7 @@ namespace CDScriptManager
                         catch (Exception ex)
                         {
                             patternIndex = line.IndexOf(code_exec_rep_i64);
-                            int computeResult = 0;
+                            long computeResult = 0;
                             // Проверяем, содержит ли строка искомый паттерн
                             try
                             {
@@ -1285,11 +1282,10 @@ namespace CDScriptManager
                                         expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
                                     }
                                     DataTable dataTable = new DataTable();
-                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    computeResult = Int64.Parse(expression);
                                     var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                                     ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
                                     byteindex += BitConverter.GetBytes(computeResult).Length;
-                                    MessageBox.Show(computeResult.ToString());
                                 }
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
