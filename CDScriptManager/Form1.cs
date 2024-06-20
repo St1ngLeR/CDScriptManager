@@ -108,7 +108,7 @@ namespace CDScriptManager
                     currentpresetname = SettingsFile.Read("currentpreset", "CDScriptManager");
                 }
             }
-            
+
             if (currentpresetname != "default")
             {
                 CheckFormTitle();
@@ -135,7 +135,7 @@ namespace CDScriptManager
                 logfile.Write("----------------------------------------\n");
                 logfile.Write("[" + DateTime.Now.ToString() + "]");
                 logfile.Write(" [INFO] ");
-                logfile.Write($"Launching the \"{Path.GetFileName(Application.ExecutablePath)}\" application\n");
+                logfile.Write($"Running application \"{Path.GetFileName(Application.ExecutablePath)}\"\n");
             }
 
             if (!SettingsFile.KeyExists("exec", "CDScriptManager"))
@@ -154,7 +154,7 @@ namespace CDScriptManager
                 {
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
-                    logfile.Write($"The executable file is \"{SettingsFile.Read("exec","CDScriptManager")}\"\n");
+                    logfile.Write($"The executable file is \"{SettingsFile.Read("exec", "CDScriptManager")}\"\n");
                 }
             }
             if (!SettingsFile.KeyExists("currentpreset", "CDScriptManager"))
@@ -295,6 +295,7 @@ namespace CDScriptManager
                 File.Copy(Directory.GetCurrentDirectory() + "\\" + filePath, tempfile, true);
                 using (var logfile = new StreamWriter(logfilepath, true))
                 {
+                    logfile.Write("----------------------------------------\n");
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
                     logfile.Write($"Creating temporary file \"{tempfile}\"\n");
@@ -305,6 +306,10 @@ namespace CDScriptManager
                 {
                     if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
                     {
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("----------------------------------------\n");
+                        }
                         CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar1, mainvar1value, true);
                         CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar2, mainvar2value, true);
                         CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar3, mainvar3value, true);
@@ -389,6 +394,7 @@ namespace CDScriptManager
             {
                 using (var logfile = new StreamWriter(logfilepath, true))
                 {
+                    logfile.Write("----------------------------------------\n");
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
                     logfile.Write($"Reading script file \"{checkedListBox1.Items[i]}\" values\n");
@@ -677,13 +683,7 @@ namespace CDScriptManager
                         {
                             logfile.Write("[" + DateTime.Now.ToString() + "]");
                             logfile.Write(" [INFO] ");
-                            logfile.Write($"Found variable \"{key}\"\n");
-                        }
-                        using (var logfile = new StreamWriter(logfilepath, true))
-                        {
-                            logfile.Write("[" + DateTime.Now.ToString() + "]");
-                            logfile.Write(" [INFO] ");
-                            logfile.Write($"The value is \"{settings[key]}\"\n");
+                            logfile.Write($"Found variable \"{key}\". The value is \"{settings[key]}\"\n");
                         }
                     }
                 }
@@ -882,7 +882,6 @@ namespace CDScriptManager
                             .Replace(" =", "")
                             .Replace("= ", "")
                             .Replace("=", "");
-                        var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                         int result = SByte.Parse(result_text);
                         byteArray_insert = BitConverter.GetBytes(result);
                         Array.Resize(ref byteArray_insert, byteArray_insert.Length - 3);
@@ -914,11 +913,58 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            using (var logfile = new StreamWriter(logfilepath, true))
+                            patternIndex = line.IndexOf(code_exec_rep_i8);
+                            int computeResult = 0;
+                            // Проверяем, содержит ли строка искомый паттерн
+                            try
                             {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [ERROR] ");
-                                logfile.Write("Could not find the starting point to replace bytes\n");
+                                if (patternIndex != -1)
+                                {
+                                    // Отображаем оставшееся содержимое строки после паттерна
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i8.Length);
+                                    string expression = contentAfterPattern.Split('=')[1].Trim();
+
+                                    foreach (var setting in settings)
+                                    {
+                                        expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    DataTable dataTable = new DataTable();
+                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                                    ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
+                                    byteindex += BitConverter.GetBytes(computeResult).Length;
+                                    MessageBox.Show(computeResult.ToString());
+                                }
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    if (BitConverter.GetBytes(computeResult).Length == 0)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [ERROR] ");
+                                        logfile.Write($"No bytes to replace found\n");
+                                    }
+                                    else if (BitConverter.GetBytes(computeResult).Length == 1)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"1 byte replaced in index {byteindex}\n");
+                                    }
+                                    else
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"{BitConverter.GetBytes(computeResult).Length} bytes replaced in index {byteindex}\n");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [ERROR] ");
+                                    logfile.Write("Could not find the starting point to replace bytes\n");
+                                }
                             }
                         }
                     }
@@ -944,7 +990,7 @@ namespace CDScriptManager
                             .Replace("=", "");
                         try
                         {
-                            int result = Int16.Parse(result_text, CultureInfo.InvariantCulture);
+                            int result = Int16.Parse(result_text);
                             var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                             byteArray_insert = BitConverter.GetBytes(result);
                             try
@@ -986,11 +1032,58 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            using (var logfile = new StreamWriter(logfilepath, true))
+                            patternIndex = line.IndexOf(code_exec_rep_i16);
+                            int computeResult = 0;
+                            // Проверяем, содержит ли строка искомый паттерн
+                            try
                             {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [ERROR] ");
-                                logfile.Write("Could not find the starting point to replace bytes\n");
+                                if (patternIndex != -1)
+                                {
+                                    // Отображаем оставшееся содержимое строки после паттерна
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i16.Length);
+                                    string expression = contentAfterPattern.Split('=')[1].Trim();
+
+                                    foreach (var setting in settings)
+                                    {
+                                        expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    DataTable dataTable = new DataTable();
+                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                                    ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
+                                    byteindex += BitConverter.GetBytes(computeResult).Length;
+                                    MessageBox.Show(computeResult.ToString());
+                                }
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    if (BitConverter.GetBytes(computeResult).Length == 0)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [ERROR] ");
+                                        logfile.Write($"No bytes to replace found\n");
+                                    }
+                                    else if (BitConverter.GetBytes(computeResult).Length == 1)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"1 byte replaced in index {byteindex}\n");
+                                    }
+                                    else
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"{BitConverter.GetBytes(computeResult).Length} bytes replaced in index {byteindex}\n");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [ERROR] ");
+                                    logfile.Write("Could not find the starting point to replace bytes\n");
+                                }
                             }
                         }
                     }
@@ -998,7 +1091,7 @@ namespace CDScriptManager
                 else if (line.Contains(code_exec_rep_i32))
                 {
                     patternIndex = line.IndexOf(code_exec_rep_i32);
-
+                    
                     // Проверяем, содержит ли строка искомый паттерн
                     if (patternIndex != -1)
                     {
@@ -1016,8 +1109,7 @@ namespace CDScriptManager
                             .Replace("=", "");
                         try
                         {
-                            int result = Int32.Parse(result_text, CultureInfo.InvariantCulture);
-                            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                            int result = Int32.Parse(result_text);
                             byteArray_insert = BitConverter.GetBytes(result);
                             try
                             {
@@ -1058,11 +1150,58 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            using (var logfile = new StreamWriter(logfilepath, true))
+                            patternIndex = line.IndexOf(code_exec_rep_i32);
+                            int computeResult = 0;
+                            // Проверяем, содержит ли строка искомый паттерн
+                            try
                             {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [ERROR] ");
-                                logfile.Write("Could not find the starting point to replace bytes\n");
+                                if (patternIndex != -1)
+                                {
+                                    // Отображаем оставшееся содержимое строки после паттерна
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i32.Length);
+                                    string expression = contentAfterPattern.Split('=')[1].Trim();
+
+                                    foreach (var setting in settings)
+                                    {
+                                        expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    DataTable dataTable = new DataTable();
+                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                                    ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
+                                    byteindex += BitConverter.GetBytes(computeResult).Length;
+                                    MessageBox.Show(computeResult.ToString());
+                                }
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    if (BitConverter.GetBytes(computeResult).Length == 0)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [ERROR] ");
+                                        logfile.Write($"No bytes to replace found\n");
+                                    }
+                                    else if (BitConverter.GetBytes(computeResult).Length == 1)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"1 byte replaced in index {byteindex}\n");
+                                    }
+                                    else
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"{BitConverter.GetBytes(computeResult).Length} bytes replaced in index {byteindex}\n");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [ERROR] ");
+                                    logfile.Write("Could not find the starting point to replace bytes\n");
+                                }
                             }
                         }
                     }
@@ -1088,7 +1227,7 @@ namespace CDScriptManager
                             .Replace("=", "");
                         try
                         {
-                            long result = Int64.Parse(result_text, CultureInfo.InvariantCulture);
+                            long result = Int64.Parse(result_text);
                             var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                             byteArray_insert = BitConverter.GetBytes(result);
                             try
@@ -1130,11 +1269,58 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            using (var logfile = new StreamWriter(logfilepath, true))
+                            patternIndex = line.IndexOf(code_exec_rep_i64);
+                            int computeResult = 0;
+                            // Проверяем, содержит ли строка искомый паттерн
+                            try
                             {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [ERROR] ");
-                                logfile.Write("Could not find the starting point to replace bytes\n");
+                                if (patternIndex != -1)
+                                {
+                                    // Отображаем оставшееся содержимое строки после паттерна
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i64.Length);
+                                    string expression = contentAfterPattern.Split('=')[1].Trim();
+
+                                    foreach (var setting in settings)
+                                    {
+                                        expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    DataTable dataTable = new DataTable();
+                                    computeResult = (int)Convert.ToSingle(dataTable.Compute(expression, ""));
+                                    var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                                    ReplaceBytesInFile(exec, byteindex, BitConverter.GetBytes(computeResult));
+                                    byteindex += BitConverter.GetBytes(computeResult).Length;
+                                    MessageBox.Show(computeResult.ToString());
+                                }
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    if (BitConverter.GetBytes(computeResult).Length == 0)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [ERROR] ");
+                                        logfile.Write($"No bytes to replace found\n");
+                                    }
+                                    else if (BitConverter.GetBytes(computeResult).Length == 1)
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"1 byte replaced in index {byteindex}\n");
+                                    }
+                                    else
+                                    {
+                                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                        logfile.Write(" [INFO] ");
+                                        logfile.Write($"{BitConverter.GetBytes(computeResult).Length} bytes replaced in index {byteindex}\n");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [ERROR] ");
+                                    logfile.Write("Could not find the starting point to replace bytes\n");
+                                }
                             }
                         }
                     }
@@ -1587,10 +1773,6 @@ namespace CDScriptManager
                                 logfile.Write("[" + DateTime.Now.ToString() + "]");
                                 logfile.Write(" [INFO] ");
                                 logfile.Write($"Script setting \"{scriptsettingname}\" is found\n");
-
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [INFO] ");
-                                logfile.Write("Checking the script setting\n");
                             }
                             button1.Enabled = true;
                         }
@@ -1833,6 +2015,16 @@ namespace CDScriptManager
                 shortcut.WorkingDirectory = Path.GetDirectoryName(Application.ExecutablePath);
                 shortcut.Arguments = $"/preset=\"{currentpresetname}\" /exec=\"{exec}\"";
                 shortcut.Save(); // Сохранить ярлык
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            using (var logfile = new StreamWriter(logfilepath, true))
+            {
+                logfile.Write("[" + DateTime.Now.ToString() + "]");
+                logfile.Write(" [INFO] ");
+                logfile.Write($"Closing application \"{Path.GetFileName(Application.ExecutablePath)}\"\n");
             }
         }
     }
