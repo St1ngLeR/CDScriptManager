@@ -121,6 +121,8 @@ namespace CDScriptManager
                         if (settingtype == "numericUpDown")
                         {
                             NumericUpDown nud = new NumericUpDown();
+                            nud.Minimum = 0;
+                            nud.Maximum = 2147483647;
                             if (PresetFile.KeyExists(settingvar, currentscript))
                             {
                                 nud.Value = Int32.Parse(PresetFile.Read(settingvar, currentscript));
@@ -142,8 +144,6 @@ namespace CDScriptManager
                             panel1.Controls.Add(nud);
                             nud.ValueChanged += NumericUpDown_ValueChanged;
                             nud.Tag = settingvar;
-                            nud.Minimum = 0;
-                            nud.Maximum = 2147483647;
                         }
                         else if (settingtype == "textBox")
                         {
