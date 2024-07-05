@@ -7,7 +7,7 @@
 - Fixed replacement with using Int8, Int16, Int32 and Int64
 
 ### 0.0.7 (2024.06.20)
-- Extended "numericUpDown" max limit from 0 to 2147483647
+- Extended "numericUpDown" max limit from 100 to 2147483647
 
 ### 0.0.6 (2024.06.06)
 - Added command-line args ("/preset=" & "/exec=")
