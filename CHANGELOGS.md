@@ -17,6 +17,7 @@
 - First GitHub release
 - Fixed icon display
 - Added reset script values feature
+- Changed "About" window
 
 ### 0.0.4 (2024.05.21)
 - Added script configuration
