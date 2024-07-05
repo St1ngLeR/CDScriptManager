@@ -6,6 +6,10 @@
 
 **CDScriptManager (*later CDSM*)** is a tool for fast and handy managing CDScript files for classic Crashday (1.0-1.2). CDSM gives you the opportunity to configure and apply special script files to a game, which open up the possibilities of low-level modding.
 
+Current version - *0.0.8*
+
+**Click [here](CHANGELOGS.md) to see all changelogs**
+
 ## Program overview
 ### Main
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/d80fa094-8417-4874-88ad-1a4675a70413)
