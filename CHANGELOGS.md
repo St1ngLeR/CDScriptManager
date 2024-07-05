@@ -20,7 +20,7 @@
 - Changed "About" window
 
 ### 0.0.4 (2024.05.21)
-- Added script configuration
+- Added script configuration feature
 
 ### 0.0.3 (2024.05.19)
 - Added presets support
