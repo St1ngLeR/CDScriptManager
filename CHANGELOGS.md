@@ -1,4 +1,4 @@
-### TODO: 0.0.9 (2024.07.06)
+### TODO: 0.0.9 (2024.07.07)
 - Added "checkBox" support for script settings
 - Added automatic formatting of floating-point numbers (i.e. the comma will be replaced by a dot)
 
