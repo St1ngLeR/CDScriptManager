@@ -7,9 +7,13 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Company>St1ngLeR</Company>
-		<FileVersion>0.0.7</FileVersion>
-		<AssemblyVersion>0.0.7</AssemblyVersion>
+		<FileVersion>0.0.9</FileVersion>
+		<AssemblyVersion>0.0.9</AssemblyVersion>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="CDScriptManager.exe" />
+	</ItemGroup>
 
 	<ItemGroup>
 	  <COMReference Include="IWshRuntimeLibrary">

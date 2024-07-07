@@ -81,7 +81,7 @@ namespace CDScriptManager
             }
             string[] lines = contentBuilder.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             int j = 1;
-            for (int i = 1; i < linescount; i++)
+            for (int i = 1; i < linescount+1; i++)
             {
                 string line = lines[i];
                 int patternIndex;
@@ -170,6 +170,39 @@ namespace CDScriptManager
                             tb.TextChanged += TextBox_TextChanged;
                             tb.Tag = settingvar;
                         }
+                        else if (settingtype == "checkBox")
+                        {
+                            CheckBox cb = new CheckBox();
+                            if (PresetFile.KeyExists(settingvar, currentscript))
+                            {
+                                if (PresetFile.Read(settingvar, currentscript) == "true")
+                                {
+                                    cb.Checked = true;
+                                }
+                                else
+                                {
+                                    cb.Checked = false;
+                                }
+                            }
+                            else
+                            {
+                                PresetFile.Write(settingvar, settingdefaultvalue, currentscript);
+                                cb.Checked = bool.Parse(settingdefaultvalue);
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [INFO] ");
+                                    logfile.Write($"Default setting value is \"{settingdefaultvalue}\"\n");
+                                }
+                            }
+                            cb.Width = 256;
+                            cb.Height = 24;
+                            cb.CheckAlign = ContentAlignment.MiddleRight;
+                            cb.Location = new Point(174, (j * 32) - 26);
+                            panel1.Controls.Add(cb);
+                            cb.CheckedChanged += CheckBox_CheckedChanged;
+                            cb.Tag = settingvar;
+                        }
                         j++;
                     }
                 }
@@ -203,13 +236,29 @@ namespace CDScriptManager
             TextBox tb = sender as TextBox;
             if (tb != null)
             {
-                PresetFile.Write(tb.Tag.ToString(), tb.Text, currentscript);
+                PresetFile.Write(tb.Tag.ToString(), tb.Text.Replace(',', '.'), currentscript);
             }
             using (var logfile = new StreamWriter(logfilepath, true))
             {
                 logfile.Write("[" + DateTime.Now.ToString() + "]");
                 logfile.Write(" [INFO] ");
-                logfile.Write($"New setting value for \"{tb.Tag}\" is \"{tb.Text}\"\n");
+                logfile.Write($"New setting value for \"{tb.Tag}\" is \"{tb.Text.Replace(',', '.')}\"\n");
+            }
+        }
+
+        private void CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+            var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
+
+            CheckBox cb = sender as CheckBox;
+            PresetFile.Write(cb.Tag.ToString(), cb.Checked.ToString().ToLower(), currentscript);
+
+            using (var logfile = new StreamWriter(logfilepath, true))
+            {
+                logfile.Write("[" + DateTime.Now.ToString() + "]");
+                logfile.Write(" [INFO] ");
+                logfile.Write($"New setting value for \"{cb.Tag}\" is \"{cb.Checked.ToString().ToLower()}\"\n");
             }
         }
 

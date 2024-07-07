@@ -1,6 +1,7 @@
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using IWshRuntimeLibrary;
@@ -586,6 +587,7 @@ namespace CDScriptManager
                 }
                 string line = lines[i];
                 int patternIndex;
+                string setting_type = null;
                 if (line.Contains(code_print))
                 {
                     patternIndex = line.IndexOf(code_print);
@@ -670,6 +672,7 @@ namespace CDScriptManager
                         var parts = line.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                         var settingParts = parts[1].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         string key = settingParts[0].Trim();
+                        setting_type = settingParts[2];
                         if (PresetFile.KeyExists(key, Path.GetFileName(filename)))
                         {
                             settings[key] = PresetFile.Read(key, Path.GetFileName(filename));
@@ -706,10 +709,9 @@ namespace CDScriptManager
                             .Replace(" =", "")
                             .Replace("= ", "")
                             .Replace("=", "");
-                        var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
-                        byteArray_insert = ConvertHexStringToByteArray(result);
                         try
                         {
+                            byteArray_insert = ConvertHexStringToByteArray(result);
                             ReplaceBytesInFile(exec, byteindex, byteArray_insert);
                             using (var logfile = new StreamWriter(logfilepath, true))
                             {
@@ -736,11 +738,44 @@ namespace CDScriptManager
                         }
                         catch (Exception ex)
                         {
-                            using (var logfile = new StreamWriter(logfilepath, true))
+                            patternIndex = line.IndexOf(code_exec_rep_b);
+                            // Проверяем, содержит ли строка искомый паттерн
+                            try
                             {
-                                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                                logfile.Write(" [ERROR] ");
-                                logfile.Write("Could not find the starting point to replace bytes\n");
+                                if (patternIndex != -1)
+                                {
+                                    // Отображаем оставшееся содержимое строки после паттерна
+                                    contentAfterPattern = line.Substring(patternIndex + code_exec_rep_i8.Length);
+                                    string expression = contentAfterPattern.Split('=')[1].Trim();
+                                    foreach (var setting in settings)
+                                    {
+                                        expression = Regex.Replace(expression, setting.Key, setting.Value.ToString(CultureInfo.InvariantCulture));
+                                    }
+                                    if (expression == "true")
+                                    {
+                                        ReplaceBytesInFile(exec, byteindex, [01]);
+                                    }
+                                    else if (expression == "false")
+                                    {
+                                        ReplaceBytesInFile(exec, byteindex, [00]);
+                                    }
+                                    byteindex += 1;
+                                }
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [INFO] ");
+                                    logfile.Write($"1 byte replaced in index {byteindex}\n");
+                                }
+                            }
+                            catch
+                            {
+                                using (var logfile = new StreamWriter(logfilepath, true))
+                                {
+                                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                                    logfile.Write(" [WARNING] ");
+                                    logfile.Write("Byte operations failed\n");
+                                }
                             }
                         }
                     }
@@ -1574,18 +1609,9 @@ namespace CDScriptManager
             {
                 string[] hexPairs = hexString.Split(' ');
                 byte[] bytes = new byte[hexPairs.Length];
-                try
+                for (int i = 0; i < hexPairs.Length; i++)
                 {
-                    for (int i = 0; i < hexPairs.Length; i++)
-                    {
-                        bytes[i] = Convert.ToByte(hexPairs[i], 16);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logfile.Write("[" + DateTime.Now.ToString() + "]");
-                    logfile.Write(" [INFO] ");
-                    logfile.Write("Calculating bytes\n");
+                    bytes[i] = Convert.ToByte(hexPairs[i], 16);
                 }
                 return bytes;
             }
