@@ -6,7 +6,7 @@
 
 **CDScriptManager (*later CDSM*)** is a tool for fast and handy managing CDScript files for classic Crashday (1.0-1.2). CDSM gives you the opportunity to configure and apply special script files to a game, which open up the possibilities of low-level modding.
 
-Current version - *0.0.8*
+Current version - *0.0.9*
 
 **Click [here](CHANGELOGS.md) to see all changelogs**
 
@@ -122,9 +122,28 @@ Exec.StartPoint = 00 01 02 0A 0B 0C
 Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
 Exec.Replace.Float = 0.25  # Converts float value to bytes and replace them after the staring point specified above
 ```
-- `Setting.Create` (textBox, numericUpDown) - creates configurable script setting. This method should be called with following template - `variable_name, text_in_manager, output_type, default_value`. The separator is "comma" (","). Example:
+- `Setting.Create` (textBox, numericUpDown, checkBox) - creates configurable script setting. This method should be called with following template - `variable_name, text_in_manager, output_type, default_value`. The separator is "comma" (","). Example:
+#### textBox
+> [!TIP]
+> This setting type is recommended for applying string or floating-point numbers values.
 ```
 Setting.Create = MySetting, My awesome setting:, textBox, AWESOME  # This line creates setting with variable "MySetting", with type "textBox" with default value "AWESOME", which is named in "Configuration" window as "My awesome setting:"
+```
+#### numericUpDown
+Minimum value - `0`
+
+Maximum value - `2147483647`
+> [!TIP]
+> This setting type is recommended for applying Int(8,16,32,64) values.
+```
+Setting.Create = MySetting, My awesome setting:, numericUpDown, 1337  # This line creates setting with variable "MySetting", with type "numericUpDown" with default value "1337", which is named in "Configuration" window as "My awesome setting:"
+```
+#### checkBox
+Accepted values - `true` or `false`
+> [!IMPORTANT]
+> Letter case is important. Make sure variable names are in lowercase.
+```
+Setting.Create = MySetting, My awesome setting:, checkBox, true  # This line creates setting with variable "MySetting", with type "textBox" with default value "true" (i.e. checkbox is checked), which is named in "Configuration" window as "My awesome setting:"
 ```
 ### Script settings
 Scripts can also have settings that are changed in the manager through the "Configuration" window. To set the settings, you need to specify the script setting body inside the script body with `setting (your_setting_body_name)` and limit the body with curly brackets. Example:
