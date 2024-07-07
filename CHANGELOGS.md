@@ -1,5 +1,11 @@
-### TODO: 0.0.9 (2024.07.07)
-- Added "checkBox" support for script settings
+### TODO: 0.1.0 (2024.07.10)
+- Removed unused parts in code
+- New main window look when no scripts installed
+- Added many exceptions to avoid error messages
+- Logging improvements
+
+### 0.0.9 (2024.07.07)
+- Added "checkBox" support for scripts
 - Added automatic formatting of floating-point numbers (i.e. the comma will be replaced by a dot)
 
 ### 0.0.8 (2024.06.21)
