@@ -1,11 +1,10 @@
-### TODO: 0.1.1 (2024.07.10)
+### 0.1.1 (2024.07.10)
 - Added many exceptions to avoid error messages
 - Logging improvements
 
 ### 0.1.0 (2024.07.09)
-- Removed unused parts in code
+- Removed unused lines in code
 - New main window look when no scripts installed
-- Limited "textBox" output to numbers, comma and dot characters
 - Allowed program running only in a single instance
 
 ### 0.0.9 (2024.07.07)
