@@ -5,6 +5,7 @@
 ### 0.1.0 (2024.07.09)
 - Removed unused lines in code
 - New main window look when no scripts installed
+- Spitted "textBox" setting type on two subtypes: "float" & "string"
 - Allowed program running only in a single instance
 
 ### 0.0.9 (2024.07.07)
