@@ -2,10 +2,11 @@
 - Added many exceptions to avoid error messages
 - Logging improvements
 
-### TODO: 0.1.0 (2024.07.08)
+### 0.1.0 (2024.07.09)
 - Removed unused parts in code
 - New main window look when no scripts installed
 - Limited "textBox" output to numbers, comma and dot characters
+- Allowed program running only in a single instance
 
 ### 0.0.9 (2024.07.07)
 - Added "checkBox" support for scripts
