@@ -1,3 +1,6 @@
+### TODO: 0.1.2 (2024.07.22)
+- Deactivating manager while the game is running
+
 ### 0.1.1 (2024.07.10)
 - Added many exceptions to avoid error messages
 - Logging improvements
@@ -5,7 +8,7 @@
 ### 0.1.0 (2024.07.09)
 - Removed unused lines in code
 - New main window look when no scripts installed
-- Spitted "textBox" setting type on two subtypes: "float" & "string"
+- Splitted "textBox" setting type on two subtypes: "float" & "string"
 - Allowed program running only in a single instance
 
 ### 0.0.9 (2024.07.07)
