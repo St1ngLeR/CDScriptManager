@@ -124,8 +124,7 @@ Exec.Replace.Float = 0.25  # Converts float value to bytes and replace them afte
 ```
 - `Setting.Create` (textBox, numericUpDown, checkBox) - creates configurable script setting. This method should be called with following template - `variable_name, text_in_manager, output_type, default_value`. The separator is "comma" (","). Example:
 #### textBox
-> [!TIP]
-> This setting type is recommended for applying string or floating-point numbers values.
+Subtypes - `float` & `string`
 ```
 Setting.Create = MySetting, My awesome setting:, textBox, AWESOME, string  # This line creates setting with variable "MySetting", with type "textBox" with default value "AWESOME" with subtype "string", which is named in "Configuration" window as "My awesome setting:"
 ```
