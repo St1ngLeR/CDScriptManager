@@ -127,7 +127,7 @@ Exec.Replace.Float = 0.25  # Converts float value to bytes and replace them afte
 > [!TIP]
 > This setting type is recommended for applying string or floating-point numbers values.
 ```
-Setting.Create = MySetting, My awesome setting:, textBox, AWESOME  # This line creates setting with variable "MySetting", with type "textBox" with default value "AWESOME", which is named in "Configuration" window as "My awesome setting:"
+Setting.Create = MySetting, My awesome setting:, textBox, AWESOME, string  # This line creates setting with variable "MySetting", with type "textBox" with default value "AWESOME" with subtype "string", which is named in "Configuration" window as "My awesome setting:"
 ```
 #### numericUpDown
 Minimum value - `0`
@@ -162,7 +162,7 @@ script MyScript
 {
   setting MySetting
   {
-    Setting.Create = MySetting, My awesome setting:, textBox, AWESOME  # Creates setting
+    Setting.Create = MySetting, My awesome setting:, textBox, AWESOME, string  # Creates setting
     Exec.StartPoint = 00 01 02 0A 0B 0C  # Sets the starting point
     Exec.Replace.String = MySetting  # Replace content on string from "MySetting" setting
   }
