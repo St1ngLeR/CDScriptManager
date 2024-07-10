@@ -1,10 +1,9 @@
+using IWshRuntimeLibrary;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
-using IWshRuntimeLibrary;
 using File = System.IO.File;
 
 namespace CDScriptManager
@@ -78,7 +77,7 @@ namespace CDScriptManager
 
         private void gitHubPageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(new ProcessStartInfo
+            Process.Start(new ProcessStartInfo
             {
                 FileName = "https://github.com/St1ngLeR",
                 UseShellExecute = true
@@ -327,6 +326,12 @@ namespace CDScriptManager
                     logfile.Write($"Running executable file \"{exec}\"\n");
                 }
                 Process.Start(Directory.GetCurrentDirectory() + "\\" + filePath).WaitForExit();
+                using (var logfile = new StreamWriter(logfilepath, true))
+                {
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [INFO] ");
+                    logfile.Write($"Closing executable file \"{exec}\"\n");
+                }
                 File.Copy(tempfile, Directory.GetCurrentDirectory() + "\\" + filePath, overwrite: true);
                 File.Delete(tempfile);
             }
@@ -344,48 +349,74 @@ namespace CDScriptManager
 
         private void CheckScriptFiles()
         {
-            FileInfo[] Files = scriptsfolder.GetFiles("*.cdscript");
-
-            using (var logfile = new StreamWriter(logfilepath, true))
+            try
             {
-                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                logfile.Write(" [INFO] ");
-                logfile.Write($"Scanning the \"scripts\" folder\n");
-            }
+                FileInfo[] Files = scriptsfolder.GetFiles("*.cdscript");
 
-            foreach (FileInfo file in Files)
-            {
-                IniFile PresetFile = new IniFile(presetspath + currentpresetname + ".ini");
-                if (!PresetFile.KeyExists("~state", file.Name))
-                {
-                    PresetFile.Write("~state", "false", file.Name);
-                }
-                checkedListBox1.Items.Add(file.Name);
                 using (var logfile = new StreamWriter(logfilepath, true))
                 {
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
                     logfile.Write(" [INFO] ");
-                    logfile.Write($"The script file \"{file.Name}\" is found\n");
+                    logfile.Write($"Scanning the \"scripts\" folder\n");
                 }
-            }
-            using (var logfile = new StreamWriter(logfilepath, true))
-            {
-                logfile.Write("[" + DateTime.Now.ToString() + "]");
-                logfile.Write(" [INFO] ");
-                if (checkedListBox1.Items.Count == 0)
+
+                if (Files.Length == 0)
                 {
-                    logfile.Write("No scripts found\n");
-                }
-                else if (checkedListBox1.Items.Count == 1)
-                {
-                    logfile.Write("Total 1 script found\n");
+                    checkedListBox1.Visible = false;
+                    label2.Visible = false;
+                    groupBox1.Visible = false;
+                    label3.Visible = true;
                 }
                 else
                 {
-                    logfile.Write($"Total {checkedListBox1.Items.Count} scripts found\n");
+                    checkedListBox1.Visible = true;
+                    label2.Visible = true;
+                    groupBox1.Visible = true;
+                    label3.Visible = false;
+
+                    foreach (FileInfo file in Files)
+                    {
+                        IniFile PresetFile = new IniFile(presetspath + currentpresetname + ".ini");
+                        if (!PresetFile.KeyExists("~state", file.Name))
+                        {
+                            PresetFile.Write("~state", "false", file.Name);
+                        }
+                        checkedListBox1.Items.Add(file.Name);
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [INFO] ");
+                            logfile.Write($"The script file \"{file.Name}\" is found\n");
+                        }
+                    }
                 }
+                using (var logfile = new StreamWriter(logfilepath, true))
+                {
+                    logfile.Write("[" + DateTime.Now.ToString() + "]");
+                    logfile.Write(" [INFO] ");
+                    if (checkedListBox1.Items.Count == 0)
+                    {
+                        logfile.Write("No scripts found\n");
+                    }
+                    else if (checkedListBox1.Items.Count == 1)
+                    {
+                        logfile.Write("Total 1 script found\n");
+                    }
+                    else
+                    {
+                        logfile.Write($"Total {checkedListBox1.Items.Count} scripts found\n");
+                    }
+                }
+                CheckPresetFile();
             }
-            CheckPresetFile();
+            catch
+            {
+                Directory.CreateDirectory(presetspath);
+                checkedListBox1.Visible = false;
+                label2.Visible = false;
+                groupBox1.Visible = false;
+                label3.Visible = true;
+            }
         }
         private void CheckPresetFile()
         {
@@ -508,7 +539,7 @@ namespace CDScriptManager
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     using (var logfile = new StreamWriter(logfilepath, true))
                     {
@@ -736,7 +767,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             patternIndex = line.IndexOf(code_exec_rep_b);
                             // Проверяем, содержит ли строка искомый паттерн
@@ -831,7 +862,7 @@ namespace CDScriptManager
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -841,7 +872,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             patternIndex = line.IndexOf(code_exec_rep_f);
                             float computeResult = 0f;
@@ -946,7 +977,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             patternIndex = line.IndexOf(code_exec_rep_i8);
                             int computeResult = 0;
@@ -1054,7 +1085,7 @@ namespace CDScriptManager
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1064,7 +1095,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             patternIndex = line.IndexOf(code_exec_rep_i16);
                             int computeResult = 0;
@@ -1124,7 +1155,7 @@ namespace CDScriptManager
                 else if (line.Contains(code_exec_rep_i32))
                 {
                     patternIndex = line.IndexOf(code_exec_rep_i32);
-                    
+
                     // Проверяем, содержит ли строка искомый паттерн
                     if (patternIndex != -1)
                     {
@@ -1171,7 +1202,7 @@ namespace CDScriptManager
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1181,7 +1212,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             patternIndex = line.IndexOf(code_exec_rep_i32);
                             int computeResult = 0;
@@ -1289,7 +1320,7 @@ namespace CDScriptManager
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1299,7 +1330,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             patternIndex = line.IndexOf(code_exec_rep_i64);
                             long computeResult = 0;
@@ -1407,7 +1438,7 @@ namespace CDScriptManager
                                     }
                                 }
                             }
-                            catch (Exception ex)
+                            catch
                             {
                                 using (var logfile = new StreamWriter(logfilepath, true))
                                 {
@@ -1417,7 +1448,7 @@ namespace CDScriptManager
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             using (var logfile = new StreamWriter(logfilepath, true))
                             {
@@ -1633,56 +1664,41 @@ namespace CDScriptManager
                         break; // Прерываем цикл после нахождения первого совпадения
                     }
                 }
-                try
+                if (mainvarvalue != null && mainvarvalue.Contains(" = "))
                 {
-                    if (mainvarvalue != null && mainvarvalue.Contains(" = "))
-                    {
-                        mainvarvalue = mainvarvalue.Replace(" = ", "");
-                    }
-                    else if (mainvarvalue != null && mainvarvalue.Contains(" ="))
-                    {
-                        mainvarvalue = mainvarvalue.Replace(" =", "");
-                    }
-                    else if (mainvarvalue != null && mainvarvalue.Contains("= "))
-                    {
-                        mainvarvalue = mainvarvalue.Replace("= ", "");
-                    }
-                    else if (mainvarvalue != null && mainvarvalue.Contains("="))
-                    {
-                        mainvarvalue = mainvarvalue.Replace("=", "");
-                    }
-
-                    if (mainvarvalue != null && mainvarvalue.Contains("#"))
-                    {
-                        mainvarvalue = mainvarvalue.Substring(0, mainvarvalue.LastIndexOf("#"));
-                    }
-
-                    if (mainvarvalue != null && mainvarvalue.Contains("\t"))
-                    {
-                        mainvarvalue = mainvarvalue.Replace("\t", "");
-                    }
-
-                    if (islogging == true)
-                    {
-                        using (var logfile = new StreamWriter(logfilepath, true))
-                        {
-                            logfile.Write("[" + DateTime.Now.ToString() + "]");
-                            logfile.Write(" [INFO] ");
-                            logfile.Write($"Found main CDScript variable \"{mainvar}\", value is \"{mainvarvalue}\"\n");
-                            mainvarcount++;
-                        }
-                    }
+                    mainvarvalue = mainvarvalue.Replace(" = ", "");
                 }
-                catch (Exception ex)
+                else if (mainvarvalue != null && mainvarvalue.Contains(" ="))
                 {
-                    if (islogging == true)
+                    mainvarvalue = mainvarvalue.Replace(" =", "");
+                }
+                else if (mainvarvalue != null && mainvarvalue.Contains("= "))
+                {
+                    mainvarvalue = mainvarvalue.Replace("= ", "");
+                }
+                else if (mainvarvalue != null && mainvarvalue.Contains("="))
+                {
+                    mainvarvalue = mainvarvalue.Replace("=", "");
+                }
+
+                if (mainvarvalue != null && mainvarvalue.Contains("#"))
+                {
+                    mainvarvalue = mainvarvalue.Substring(0, mainvarvalue.LastIndexOf("#"));
+                }
+
+                if (mainvarvalue != null && mainvarvalue.Contains("\t"))
+                {
+                    mainvarvalue = mainvarvalue.Replace("\t", "");
+                }
+
+                if (islogging == true)
+                {
+                    using (var logfile = new StreamWriter(logfilepath, true))
                     {
-                        using (var logfile = new StreamWriter(logfilepath, true))
-                        {
-                            logfile.Write("[" + DateTime.Now.ToString() + "]");
-                            logfile.Write(" [WARNING] ");
-                            logfile.Write($"Main CDScript variable \"{mainvar}\" is not found, value is unknown\n");
-                        }
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Found main CDScript variable \"{mainvar}\", value is \"{mainvarvalue}\"\n");
+                        mainvarcount++;
                     }
                 }
                 return mainvarvalue;
@@ -1691,79 +1707,86 @@ namespace CDScriptManager
 
         private void checkedListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Проверка "главных" переменных CDScript
-            if (checkedListBox1.SelectedIndex != previousIndex)
+            try
             {
-                label2.Text = "";
-                previousIndex = checkedListBox1.SelectedIndex;
-
-                if (checkedListBox1.SelectedItem != null)
+                // Проверка "главных" переменных CDScript
+                if (checkedListBox1.SelectedIndex != previousIndex)
                 {
-                    using (var logfile = new StreamWriter(logfilepath, true))
-                    {
-                        logfile.Write("----------------------------------------\n");
-                        logfile.Write("[" + DateTime.Now.ToString() + "]");
-                        logfile.Write(" [INFO] ");
-                        logfile.Write($"Checking the \"{checkedListBox1.SelectedItem}\" script\n");
-                    }
+                    label2.Text = "";
+                    previousIndex = checkedListBox1.SelectedIndex;
 
-                    using (var logfile = new StreamWriter(logfilepath, true))
+                    if (checkedListBox1.SelectedItem != null)
                     {
-                        logfile.Write("[" + DateTime.Now.ToString() + "]");
-                        logfile.Write(" [INFO] ");
-                        logfile.Write("Checking the main variables\n");
-                    }
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("----------------------------------------\n");
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [INFO] ");
+                            logfile.Write($"Checking the \"{checkedListBox1.SelectedItem}\" script\n");
+                        }
 
-                    if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar1, mainvar1value, false) != null)
-                    {
-                        label2.Text += $"Name: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar1, mainvar1value, true)}\n\n";
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [INFO] ");
+                            logfile.Write("Checking the main variables\n");
+                        }
+
+                        if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar1, mainvar1value, false) != null)
+                        {
+                            label2.Text += $"Name: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar1, mainvar1value, true)}\n\n";
+                        }
+                        else
+                        {
+                            label2.Text += "Name: (unknown)\n\n";
+                        }
+                        if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar2, mainvar2value, false) != null)
+                        {
+                            label2.Text += $"Version: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar2, mainvar2value, true)}\n\n";
+                        }
+                        else
+                        {
+                            label2.Text += "Version: (unknown)\n\n";
+                        }
+                        if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar3, mainvar3value, false) != null)
+                        {
+                            label2.Text += $"Description: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar3, mainvar3value, true)}\n\n";
+                        }
+                        else
+                        {
+                            label2.Text += "Description: (unknown)\n\n";
+                        }
+                        if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar4, mainvar4value, false) != null)
+                        {
+                            label2.Text += $"Author: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar4, mainvar4value, true)}\n\n";
+                        }
+                        else
+                        {
+                            label2.Text += "Author: (unknown)\n\n";
+                        }
+                        if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar5, mainvar5value, false) != null)
+                        {
+                            label2.Text += $"Website: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar5, mainvar5value, true)}\n\n";
+                        }
+                        else
+                        {
+                            label2.Text += "Website: (unknown)\n\n";
+                        }
+                        if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar6, mainvar6value, false) != null)
+                        {
+                            label2.Text += $"E-Mail: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar6, mainvar6value, true)}\n\n";
+                        }
+                        else
+                        {
+                            label2.Text += "E-Mail: (unknown)\n\n";
+                        }
+                        ToggleConfigButton(checkedListBox1.SelectedItem.ToString());
                     }
-                    else
-                    {
-                        label2.Text += "Name: (unknown)\n\n";
-                    }
-                    if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar2, mainvar2value, false) != null)
-                    {
-                        label2.Text += $"Version: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar2, mainvar2value, true)}\n\n";
-                    }
-                    else
-                    {
-                        label2.Text += "Version: (unknown)\n\n";
-                    }
-                    if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar3, mainvar3value, false) != null)
-                    {
-                        label2.Text += $"Description: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar3, mainvar3value, true)}\n\n";
-                    }
-                    else
-                    {
-                        label2.Text += "Description: (unknown)\n\n";
-                    }
-                    if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar4, mainvar4value, false) != null)
-                    {
-                        label2.Text += $"Author: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar4, mainvar4value, true)}\n\n";
-                    }
-                    else
-                    {
-                        label2.Text += "Author: (unknown)\n\n";
-                    }
-                    if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar5, mainvar5value, false) != null)
-                    {
-                        label2.Text += $"Website: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar5, mainvar5value, true)}\n\n";
-                    }
-                    else
-                    {
-                        label2.Text += "Website: (unknown)\n\n";
-                    }
-                    if (CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar6, mainvar6value, false) != null)
-                    {
-                        label2.Text += $"E-Mail: {CheckMainVar(checkedListBox1.SelectedItem.ToString(), mainvar6, mainvar6value, true)}\n\n";
-                    }
-                    else
-                    {
-                        label2.Text += "E-Mail: (unknown)\n\n";
-                    }
-                    ToggleConfigButton(checkedListBox1.SelectedItem.ToString());
                 }
+            }
+            catch
+            {
+                MessageBox.Show("Failed to load script file information. Refresh the list to get up-to-date list of script files.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1812,7 +1835,7 @@ namespace CDScriptManager
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         using (var logfile = new StreamWriter(logfilepath, true))
                         {
@@ -2012,7 +2035,11 @@ namespace CDScriptManager
         private void button1_Click(object sender, EventArgs e)
         {
             Form3 form3 = new Form3(GetSelectedListItem());
-            form3.ShowDialog();
+            try
+            {
+                form3.ShowDialog();
+            }
+            catch { }
         }
 
         private void runGameToolStripMenuItem_Click(object sender, EventArgs e)

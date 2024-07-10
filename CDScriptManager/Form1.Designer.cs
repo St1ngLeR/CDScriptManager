@@ -49,6 +49,7 @@
             button2 = new Button();
             openFileDialog1 = new OpenFileDialog();
             saveFileDialog1 = new SaveFileDialog();
+            label3 = new Label();
             menuStrip1.SuspendLayout();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -204,11 +205,22 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // label3
+            // 
+            label3.Anchor = AnchorStyles.None;
+            label3.Location = new Point(52, 188);
+            label3.Name = "label3";
+            label3.Size = new Size(349, 30);
+            label3.TabIndex = 6;
+            label3.Text = "No scripts found!\r\nYou can install scripts in \"scripts\" folder, configure and use them.";
+            label3.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(456, 451);
+            Controls.Add(label3);
             Controls.Add(groupBox1);
             Controls.Add(label1);
             Controls.Add(button2);
@@ -223,6 +235,7 @@
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "CDScriptManager";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -253,5 +266,6 @@
         private ToolStripMenuItem setGameExecutableToolStripMenuItem;
         private ToolStripMenuItem runGameToolStripMenuItem;
         private ToolStripMenuItem createAShortcutToolStripMenuItem;
+        private Label label3;
     }
 }
