@@ -14,7 +14,7 @@
 - Allowed program running only in a single instance
 
 ### 0.0.9 (2024.07.07)
-- Added "checkBox" support for scripts
+- Added "checkBox" setting type support for scripts
 - Added automatic formatting of floating-point numbers (i.e. the comma will be replaced by a dot)
 
 ### 0.0.8 (2024.06.21)
@@ -26,7 +26,7 @@
 
 ### 0.0.6 (2024.06.06)
 - Added command-line args ("/preset=" & "/exec=")
-- Added shortcut creation
+- Added shortcut creation feature
 
 ### 0.0.5 (2024.06.04)
 - First GitHub release
