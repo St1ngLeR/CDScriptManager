@@ -10,6 +10,8 @@ Current version - *0.1.1*
 
 **Click [here](CHANGELOGS.md) to see all changelogs**
 
+**Click [here](SCRIPT.md) for CDScript files writing tutorial**
+
 ## Program overview
 ### Main
 ![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/d80fa094-8417-4874-88ad-1a4675a70413)
