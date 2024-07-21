@@ -8,6 +8,15 @@
 
 Current version - *0.1.1*
 
+> [!IMPORTANT]
+> For the application to work correctly, you must use the executable files "by Steve". Below is a table with unique files data that you can compare with your available EXE files. In any case, you can download the files [here](https://drive.usercontent.google.com/u/0/uc?id=0B5YihDSzcD-aYlJPVEROVG5fS3c&export=download). If you want to add support for other EXEs, let me know.
+
+| Executable file name  | Game version | File size (in bytes) | Checksum (CRC-32) | Checksum (MD-5) |
+| --------------------- | ------------ | -------------------- | ----------------- | --------------- |
+| Crashday10.exe | 1.0 | 3347968 | 498F34B6 | EE740F59A3DF76FC68159758A7D78055
+| Crashday11.exe | 1.1 | 3380224 | A38F60B6 | 1CEA94001C8102582A5C007BDF765646
+| Crashday11.exe | 1.2 | 3378688 | 8D452A29 | F027022CF84FB0A7A9DB9770545346B9
+
 **Click [here](CHANGELOGS.md) to see all changelogs**
 
 **Click [here](SCRIPT.md) for CDScript files writing tutorial**
