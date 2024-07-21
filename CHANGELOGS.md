@@ -1,4 +1,4 @@
-### TODO: 0.1.2 (2024.07.20)
+### 0.1.2 (2024.07.22)
 - Deactivating manager while the game is running
 - Added exceptions related to script checkings
 - Added Crashday executable file detection
