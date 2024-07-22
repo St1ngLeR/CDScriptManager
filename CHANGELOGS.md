@@ -1,3 +1,6 @@
+### TODO: 0.1.3 (2024.07.23)
+- Fixed malfunction of the program when the game crashes
+
 ### 0.1.2 (2024.07.22)
 - Deactivating manager while the game is running
 - Added exceptions related to script checkings
