@@ -340,13 +340,15 @@ namespace CDScriptManager
                     }
                     catch (Exception ex)
                     {
+                    MessageBox.Show("Script setting is not found. Please check the correctness of the script code.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         using (var logfile = new StreamWriter(logfilepath, true))
                         {
                             logfile.Write("[" + DateTime.Now.ToString() + "]");
                             logfile.Write(" [INFO] ");
                             logfile.Write("Script setting is not found\n");
                         }
-                    }
+                    this.Dispose();
+                }
                 }
         }
 

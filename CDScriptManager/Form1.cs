@@ -2,6 +2,7 @@ using IWshRuntimeLibrary;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using File = System.IO.File;
@@ -291,49 +292,106 @@ namespace CDScriptManager
         {
             try
             {
-                tempfile = Path.GetTempFileName();
-                File.Copy(Directory.GetCurrentDirectory() + "\\" + filePath, tempfile, true);
+                bool checksum;
                 using (var logfile = new StreamWriter(logfilepath, true))
                 {
                     logfile.Write("----------------------------------------\n");
-                    logfile.Write("[" + DateTime.Now.ToString() + "]");
-                    logfile.Write(" [INFO] ");
-                    logfile.Write($"Creating temporary file \"{tempfile}\"\n");
                 }
-                File.SetAttributes(tempfile, FileAttributes.Normal);
-                var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
-                for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                SHA256 sha256 = SHA256.Create();
+                if (BitConverter.ToString(sha256.ComputeHash(File.ReadAllBytes(exec))).Replace("-", "") == "BF26B285AC25316191411006D787B2A50D00B63ACCC8CA0A2ABC99EF4314704E")
                 {
-                    if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
+                    using (var logfile = new StreamWriter(logfilepath, true))
                     {
-                        using (var logfile = new StreamWriter(logfilepath, true))
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write("A valid checksum of the executable file was found. Game version - 1.0\n");
+                    }
+                    checksum = true;
+                }
+                else if (BitConverter.ToString(sha256.ComputeHash(File.ReadAllBytes(exec))).Replace("-", "") == "DF3672DE82B4D971E5785F34C1A20DD607716D9654C2AD3F4D77451C878AF39B")
+                {
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write("A valid checksum of the executable file was found. Game version - 1.1\n");
+                    }
+                    checksum = true;
+                }
+                else if (BitConverter.ToString(sha256.ComputeHash(File.ReadAllBytes(exec))).Replace("-", "") == "551837A0BE60EAD7E4797AFE27864165FEC81605078C964EFE6A03D386E49395")
+                {
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write("A valid checksum of the executable file was found. Game version - 1.2\n");
+                    }
+                    checksum = true;
+                }
+                else
+                {
+                    MessageBox.Show("The file checksum does not match. Please make sure you are using valid game executables. See the GitHub page for details.","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [ERROR] ");
+                        logfile.Write("The file checksum does not match. The file cannot be manipulated.\n");
+                    }
+                    checksum = false;
+                }
+                if (checksum == true)
+                {
+                    foreach (Control c in this.Controls)
+                    {
+                        c.Enabled = false;
+                    }
+                    tempfile = Path.GetTempFileName();
+                    File.Copy(Directory.GetCurrentDirectory() + "\\" + filePath, tempfile, true);
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Creating temporary file \"{tempfile}\"\n");
+                    }
+                    File.SetAttributes(tempfile, FileAttributes.Normal);
+                    var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+                    for (int i = 0; i < checkedListBox1.Items.Count; i++)
+                    {
+                        if (checkedListBox1.GetItemCheckState(i) == CheckState.Checked)
                         {
-                            logfile.Write("----------------------------------------\n");
+                            using (var logfile = new StreamWriter(logfilepath, true))
+                            {
+                                logfile.Write("----------------------------------------\n");
+                            }
+                            CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar1, mainvar1value, true);
+                            CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar2, mainvar2value, true);
+                            CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar3, mainvar3value, true);
+                            CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar4, mainvar4value, true);
+                            CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar5, mainvar5value, true);
+                            CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar6, mainvar6value, true);
+                            ScriptChecking(checkedListBox1.Items[i].ToString());
                         }
-                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar1, mainvar1value, true);
-                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar2, mainvar2value, true);
-                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar3, mainvar3value, true);
-                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar4, mainvar4value, true);
-                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar5, mainvar5value, true);
-                        CheckMainVar(checkedListBox1.Items[i].ToString(), mainvar6, mainvar6value, true);
-                        ScriptChecking(checkedListBox1.Items[i].ToString());
+                    }
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Running executable file \"{exec}\"\n");
+                    }
+                    Process.Start(Directory.GetCurrentDirectory() + "\\" + filePath).WaitForExit();
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Closing executable file \"{exec}\"\n");
+                    }
+                    File.Copy(tempfile, Directory.GetCurrentDirectory() + "\\" + filePath, overwrite: true);
+                    File.Delete(tempfile);
+                    foreach (Control c in this.Controls)
+                    {
+                        c.Enabled = true;
                     }
                 }
-                using (var logfile = new StreamWriter(logfilepath, true))
-                {
-                    logfile.Write("[" + DateTime.Now.ToString() + "]");
-                    logfile.Write(" [INFO] ");
-                    logfile.Write($"Running executable file \"{exec}\"\n");
-                }
-                Process.Start(Directory.GetCurrentDirectory() + "\\" + filePath).WaitForExit();
-                using (var logfile = new StreamWriter(logfilepath, true))
-                {
-                    logfile.Write("[" + DateTime.Now.ToString() + "]");
-                    logfile.Write(" [INFO] ");
-                    logfile.Write($"Closing executable file \"{exec}\"\n");
-                }
-                File.Copy(tempfile, Directory.GetCurrentDirectory() + "\\" + filePath, overwrite: true);
-                File.Delete(tempfile);
             }
             catch
             {
@@ -551,6 +609,7 @@ namespace CDScriptManager
                         logfile.Write(" [INFO] ");
                         logfile.Write("Script checking stopped");
                     }
+                    MessageBox.Show($"Failed to read script file \"{filename}\". Script body is not found. Please check the correctness of the script code.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     scriptbodyname = null;
                 }
             }
