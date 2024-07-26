@@ -1,5 +1,12 @@
+### TODO: 0.1.X (2024.08.XX)
+- First public release
+
+### TODO: 0.1.4 (2024.07.27)
+- Optimized code
+- Added a few exceptions
+
 ### 0.1.3 (2024.07.26)
-- Added option to set command-line argunments for game exectutable
+- Added option to set command-line argunments for game executable
 - Added command-line arg "/execargs="
 
 ### 0.1.2 (2024.07.22)
@@ -33,7 +40,7 @@
 - Added shortcut creation feature
 
 ### 0.0.5 (2024.06.04)
-- First GitHub release
+- First private GitHub release
 - Fixed icon display
 - Added reset script values feature
 - Changed "About" window
