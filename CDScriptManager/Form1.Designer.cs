@@ -50,6 +50,7 @@
             openFileDialog1 = new OpenFileDialog();
             saveFileDialog1 = new SaveFileDialog();
             label3 = new Label();
+            setExecutableArgumentsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             groupBox1.SuspendLayout();
             SuspendLayout();
@@ -65,7 +66,7 @@
             // 
             // editToolStripMenuItem
             // 
-            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runGameToolStripMenuItem, setGameExecutableToolStripMenuItem, createAShortcutToolStripMenuItem });
+            editToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { runGameToolStripMenuItem, setGameExecutableToolStripMenuItem, setExecutableArgumentsToolStripMenuItem, createAShortcutToolStripMenuItem });
             editToolStripMenuItem.Name = "editToolStripMenuItem";
             editToolStripMenuItem.Size = new Size(50, 20);
             editToolStripMenuItem.Text = "Game";
@@ -73,21 +74,21 @@
             // runGameToolStripMenuItem
             // 
             runGameToolStripMenuItem.Name = "runGameToolStripMenuItem";
-            runGameToolStripMenuItem.Size = new Size(183, 22);
+            runGameToolStripMenuItem.Size = new Size(210, 22);
             runGameToolStripMenuItem.Text = "Run game";
             runGameToolStripMenuItem.Click += runGameToolStripMenuItem_Click;
             // 
             // setGameExecutableToolStripMenuItem
             // 
             setGameExecutableToolStripMenuItem.Name = "setGameExecutableToolStripMenuItem";
-            setGameExecutableToolStripMenuItem.Size = new Size(183, 22);
+            setGameExecutableToolStripMenuItem.Size = new Size(210, 22);
             setGameExecutableToolStripMenuItem.Text = "Set game executable";
             setGameExecutableToolStripMenuItem.Click += setGameExecutableToolStripMenuItem_Click;
             // 
             // createAShortcutToolStripMenuItem
             // 
             createAShortcutToolStripMenuItem.Name = "createAShortcutToolStripMenuItem";
-            createAShortcutToolStripMenuItem.Size = new Size(183, 22);
+            createAShortcutToolStripMenuItem.Size = new Size(210, 22);
             createAShortcutToolStripMenuItem.Text = "Create shortcut";
             createAShortcutToolStripMenuItem.Click += createAShortcutToolStripMenuItem_Click;
             // 
@@ -215,6 +216,13 @@
             label3.Text = "No scripts found!\r\nYou can install scripts in \"scripts\" folder, configure and use them.";
             label3.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // setExecutableArgumentsToolStripMenuItem
+            // 
+            setExecutableArgumentsToolStripMenuItem.Name = "setExecutableArgumentsToolStripMenuItem";
+            setExecutableArgumentsToolStripMenuItem.Size = new Size(210, 22);
+            setExecutableArgumentsToolStripMenuItem.Text = "Set executable arguments";
+            setExecutableArgumentsToolStripMenuItem.Click += setExecutableArgumentsToolStripMenuItem_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -267,5 +275,6 @@
         private ToolStripMenuItem runGameToolStripMenuItem;
         private ToolStripMenuItem createAShortcutToolStripMenuItem;
         private Label label3;
+        private ToolStripMenuItem setExecutableArgumentsToolStripMenuItem;
     }
 }
