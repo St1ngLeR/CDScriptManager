@@ -1,5 +1,6 @@
 ### 0.1.3 (2024.07.26)
 - Added option to set command-line argunments for game exectutable
+- Added command-line arg "/execargs="
 
 ### 0.1.2 (2024.07.22)
 - Deactivating manager while the game is running
