@@ -29,6 +29,7 @@ namespace CDScriptManager
                 SettingsFile.Write("execargs", textBox1.Text, "CDScriptManager");
             }
             MessageBox.Show("The arguments were saved successfully.","Save",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            this.Close();
         }
 
         private void Form4_Load(object sender, EventArgs e)

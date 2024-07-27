@@ -366,6 +366,7 @@ namespace CDScriptManager
                 }
                 if (checksum == true)
                 {
+                    File.SetAttributes(exec, FileAttributes.Normal);
                     foreach (Control c in this.Controls)
                     {
                         c.Enabled = false;
@@ -398,9 +399,28 @@ namespace CDScriptManager
                     }
                     using (var logfile = new StreamWriter(logfilepath, true))
                     {
+                        logfile.Write("----------------------------------------\n");
                         logfile.Write("[" + DateTime.Now.ToString() + "]");
                         logfile.Write(" [INFO] ");
                         logfile.Write($"Running executable file \"{exec}\"\n");
+                    }
+                    if (args != null)
+                    {
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [INFO] ");
+                            logfile.Write($"Command-line arguments found: \"{args}\"\n");
+                        }
+                    }
+                    else
+                    {
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [INFO] ");
+                            logfile.Write($"No command-line arguments found\n");
+                        }
                     }
                     ProcessStartInfo startInfo = new ProcessStartInfo
                     {
@@ -416,6 +436,12 @@ namespace CDScriptManager
                     }
                     File.Copy(tempfile, Directory.GetCurrentDirectory() + "\\" + filePath, overwrite: true);
                     File.Delete(tempfile);
+                    using (var logfile = new StreamWriter(logfilepath, true))
+                    {
+                        logfile.Write("[" + DateTime.Now.ToString() + "]");
+                        logfile.Write(" [INFO] ");
+                        logfile.Write($"Deleting temporary file \"{tempfile}\"\n");
+                    }
                     foreach (Control c in this.Controls)
                     {
                         c.Enabled = true;
@@ -1771,12 +1797,24 @@ namespace CDScriptManager
 
                 if (islogging == true)
                 {
-                    using (var logfile = new StreamWriter(logfilepath, true))
+                    if (mainvarvalue != null)
                     {
-                        logfile.Write("[" + DateTime.Now.ToString() + "]");
-                        logfile.Write(" [INFO] ");
-                        logfile.Write($"Found main CDScript variable \"{mainvar}\", value is \"{mainvarvalue}\"\n");
-                        mainvarcount++;
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [INFO] ");
+                            logfile.Write($"Found main CDScript variable \"{mainvar}\", value is \"{mainvarvalue}\"\n");
+                            mainvarcount++;
+                        }
+                    }
+                    else
+                    {
+                        using (var logfile = new StreamWriter(logfilepath, true))
+                        {
+                            logfile.Write("[" + DateTime.Now.ToString() + "]");
+                            logfile.Write(" [WARNING] ");
+                            logfile.Write($"Could not found value for main CDScript variable \"{mainvar}\"\n");
+                        }
                     }
                 }
                 return mainvarvalue;

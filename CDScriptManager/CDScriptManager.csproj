@@ -29,7 +29,7 @@
 
 	<PropertyGroup>
 		<SourceRevisionId>build$([System.DateTime]::Now.Date.ToString("yyyy.MM.dd"))</SourceRevisionId>
-		<Win32Resource>C:\Users\st1ng\source\repos\CDScriptManager\CDScriptManager\Res.res</Win32Resource>
+		<Win32Resource>Res.res</Win32Resource>
 	</PropertyGroup>
 	
 	<ItemGroup>

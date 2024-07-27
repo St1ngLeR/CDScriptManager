@@ -17,6 +17,7 @@ namespace CDScriptManager
         string logfilepath = Directory.GetCurrentDirectory() + "\\cdscript_log.txt";
         DirectoryInfo scriptsfolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\scripts");
         StringBuilder contentBuilder = new StringBuilder();
+        IniFile SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
 
         public Form3(string selectedItem)
         {
@@ -27,7 +28,7 @@ namespace CDScriptManager
 
         public void Main(string currentscript)
         {
-            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+            
             var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
 
             try
@@ -214,6 +215,11 @@ namespace CDScriptManager
                         }
                     }
                 }
+                if (j == 1)
+                {
+                    this.Dispose();
+                    MessageBox.Show($"Failed to read script file \"{currentscript}\". Please check the correctness of the script code.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 j = 0;
             }
             catch
@@ -225,7 +231,6 @@ namespace CDScriptManager
 
         private void NumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
             var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
 
             NumericUpDown nud = sender as NumericUpDown;
@@ -260,7 +265,6 @@ namespace CDScriptManager
 
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
             var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
 
             TextBox tb = sender as TextBox;
@@ -282,7 +286,6 @@ namespace CDScriptManager
 
         private void CheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
             var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
 
             CheckBox cb = sender as CheckBox;
@@ -363,7 +366,6 @@ namespace CDScriptManager
                     logfile.Write(" [INFO] ");
                     logfile.Write("The default values have been reset for all script values\n");
                 }
-                var SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
                 var PresetFile = new IniFile(Directory.GetCurrentDirectory() + "\\scripts\\presets\\" + SettingsFile.Read("currentpreset", "CDScriptManager") + ".ini");
                 string presetState = PresetFile.Read("~state", currentscript);
                 PresetFile.DeleteSection(currentscript);
