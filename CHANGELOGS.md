@@ -1,7 +1,7 @@
-### TODO: 0.1.X (2024.08.XX)
+### TODO: 0.1.5 (2024.08.01)
 - First public release
 
-### TODO: 0.1.4 (2024.07.27)
+### 0.1.4 (2024.07.27)
 - Optimized code
 - Added a few exceptions
 
