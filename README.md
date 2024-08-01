@@ -6,7 +6,7 @@
 
 **CDScriptManager (*later CDSM*)** is a tool for fast and handy managing CDScript files for classic Crashday (1.0-1.2). CDSM gives you the opportunity to configure and apply special script files to a game, which open up the possibilities of low-level modding.
 
-Current version - *0.1.4*
+Current version - *0.1.5*
 
 > [!IMPORTANT]
 > For the application to work correctly, you must use the executable files "by Steve". Below is a table with unique files data that you can compare with your available EXE files. In any case, you can download the files [here](https://drive.usercontent.google.com/u/0/uc?id=0B5YihDSzcD-aYlJPVEROVG5fS3c&export=download). If you want to add support for other EXEs, let me know.
@@ -34,32 +34,34 @@ CDSM is a small window that consists of various main elements:
 6. "Refresh" button. The button to refrest script list.
 7. "Configure" button. The button to configure script settings in separated window. The button is enabled only if script has settings to configure. (see ["Configuration" window](#configuration-window))
 ### "Game" tab
-![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/c0556bfb-8b54-45b2-a435-1dfbd5dd9aa9)
+![image](https://github.com/user-attachments/assets/e796549b-9e48-476d-b5a0-d539974d55ba)
 
 8. "Run game" option. Run the game executable (`.exe` or `.dll`).
 9. "Set game executable" option. Change the game executable (`.exe` or `.dll`).
-10. "Create shortcut" option. Create shortcut with preinstalled game executable and script preset via command-line arguments for quick game run. (see [Command-line arguments](#command-line-arguments))
+10. "Set executable arguments" option. Add/remove command-line arguments for Crashday executable.
+11. "Create shortcut" option. Create shortcut with preinstalled game executable and script preset via command-line arguments for quick game run. (see [Command-line arguments](#command-line-arguments))
 ### "Presets" tab
-![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/6d751ff5-ace5-4dba-9b5f-ac5dac1eba41)
+![image](https://github.com/user-attachments/assets/9d25a6a2-f9e9-4e6a-bf43-2665bc351d1b)
 
-11. "New preset" option. Create a new script preset. When creating a preset, it is automatically selected as the current one.
-12. "Open preset" option. Loads preset file.
-13. "Save preset as" option. Works similarly to the "New preset" option, but without preset selection.
+12. "New preset" option. Create a new script preset. When creating a preset, it is automatically selected as the current one.
+13. "Open preset" option. Loads preset file.
+14. "Save preset as" option. Works similarly to the "New preset" option, but without preset selection.
 ### "About" tab
-![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/698ffcef-9cff-4df7-b586-4ef2061c9b3a)
+![image](https://github.com/user-attachments/assets/705481c3-ade2-45f1-899e-5c4427b1c41b)
 
-14. "Information" option. Opens a separated window, which contains CDSM version.
-15. "GitHub page" option. Opens St1ngLeR's GitHub page.
+15. "Information" option. Opens a separated window, which contains CDSM version.
+16. "GitHub page" option. Opens St1ngLeR's GitHub page.
 ### "Configuration" window
-![image](https://github.com/St1ngLeR/CDScriptManager/assets/63962772/b88389fa-0742-45bf-8cfa-250bced96a5d)
+![image](https://github.com/user-attachments/assets/19f68984-5beb-4bc3-adc4-594a67cdb96f)
 
-16. Settings list. The list of script settings that can be configurated by user. The count of settings is depends on the script.
-17. "Reset button". Reset all script settings to the default values.
+17. Settings list. The list of script settings that can be configurated by user. The count of settings is depends on the script.
+18. "Reset button". Reset all script settings to the default values.
 
 ## Command-line arguments
 CDSM supports command-line arguments to speed up and simplify the procedure of running the game:
 - `/preset=(preset_name)` - loads specified preset from `scripts/presets` folder.
 - `/exec=(executable_file_name)` - runs specified executable file (`.exe` or `.dll`).
+- `/execargs=(executable_arguments)` - adds specified command-line arguments for specified Crashday executable.
 > [!IMPORTANT]
 > The order of the arguments is important. If you want to start the game with a preset, make sure that the preset is set **BEFORE** assigning the file to run.
 
