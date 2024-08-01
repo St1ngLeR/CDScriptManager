@@ -2060,6 +2060,8 @@ namespace CDScriptManager
             ofd.Filter = "Scripts preset (*.ini)|*.ini";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                previousIndex = -1;
+                checkedListBox1.ClearSelected();
                 using (var logfile = new StreamWriter(logfilepath, true))
                 {
                     logfile.Write("[" + DateTime.Now.ToString() + "]");
