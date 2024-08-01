@@ -1,5 +1,6 @@
-### TODO: 0.1.5 (2024.08.01)
+### 0.1.5 (2024.08.01)
 - First public release
+- Fixed appearance of scrollbox in "Configuration" window
 
 ### 0.1.4 (2024.07.27)
 - Optimized code
