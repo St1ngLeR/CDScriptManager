@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Windows.Forms;
 
 namespace CDScriptManager
 {
@@ -18,6 +19,7 @@ namespace CDScriptManager
         DirectoryInfo scriptsfolder = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\scripts");
         StringBuilder contentBuilder = new StringBuilder();
         IniFile SettingsFile = new IniFile(Directory.GetCurrentDirectory() + "\\cdsmanager_settings.ini");
+        private List<Label> labels = new List<Label>();
 
         public Form3(string selectedItem)
         {
@@ -125,6 +127,7 @@ namespace CDScriptManager
                             label.AutoSize = true;
                             label.Location = new Point(3, (j * 32) - 24);
                             panel1.Controls.Add(label);
+                            labels.Add(label);
                             if (settingtype == "numericUpDown")
                             {
                                 NumericUpDown nud = new NumericUpDown();
@@ -219,6 +222,19 @@ namespace CDScriptManager
                 {
                     this.Dispose();
                     MessageBox.Show($"Failed to read script file \"{currentscript}\". Please check the correctness of the script code.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                if (j > 12)
+                {
+                    panel1.AutoScroll = false;
+                    panel1.HorizontalScroll.Enabled = false;
+                    panel1.HorizontalScroll.Visible = false;
+                    panel1.HorizontalScroll.Maximum = 0;
+                    panel1.AutoScroll = true;
+                    // Перебор Label из списка
+                    foreach (Label label in labels)
+                    {
+                        label.Location = new Point(30, label.Location.Y);
+                    }
                 }
                 j = 0;
             }

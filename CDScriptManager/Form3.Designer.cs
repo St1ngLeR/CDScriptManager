@@ -34,7 +34,7 @@
             // 
             // panel1
             // 
-            panel1.AutoScroll = true;
+            panel1.AutoScrollMargin = new Size(10, 10);
             panel1.Location = new Point(12, 12);
             panel1.Name = "panel1";
             panel1.Size = new Size(430, 355);
