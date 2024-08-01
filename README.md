@@ -17,8 +17,10 @@ Current version - *0.1.5*
 | Crashday11.exe | 1.1 | 3380224 | A38F60B6 | 1CEA94001C8102582A5C007BDF765646
 | Crashday11.exe | 1.2 | 3378688 | 8D452A29 | F027022CF84FB0A7A9DB9770545346B9
 
-CDSM should be located in the game folder. Scripts for the manager must be installed in the "scripts" folder. (see [Files overview](#files-overview))
+### Installing
+CDSM should be located in the game folder (i.e. `C:\Games\Crashday`). Scripts for the manager must be installed in the `scripts` folder. (see [Files overview](#files-overview))
 
+### Links
 **Click [here](CHANGELOGS.md) to see all changelogs**
 
 **Click [here](SCRIPT.md) for CDScript files writing tutorial**
