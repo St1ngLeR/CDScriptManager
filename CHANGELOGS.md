@@ -1,6 +1,7 @@
 ### 0.1.5 (2024.08.01)
 - First public release
 - Fixed appearance of scrollbox in "Configuration" window
+- Fixed turning scripts on/off when changing presets
 
 ### 0.1.4 (2024.07.27)
 - Optimized code
